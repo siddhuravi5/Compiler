@@ -1,0 +1,6 @@
+decl
+	int a,array[22],b;
+	int function(int a, str b,int c, int d, int e);
+	str everest, himalaya[10],him;
+	str function2(str a, int b);
+enddecl

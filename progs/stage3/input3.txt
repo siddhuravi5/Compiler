@@ -1,0 +1,15 @@
+begin
+	read(a);
+	b=0;
+	while(a!=0) do
+		b=b+a;
+		if(b>30) then
+			break;
+		else
+			read(a);
+			continue;
+		endif;
+		write(b);
+	endwhile;
+	write(b);
+end;
