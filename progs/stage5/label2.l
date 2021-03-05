@@ -1,6 +1,7 @@
 %{
 	#include <stdlib.h>
 	#include <stdio.h>
+	#include "exprtree.h"
 	int addr=2054;	//correct address -2
 	//int LT[20];
 	FILE* fp1;
@@ -9,11 +10,21 @@
 
 %%
 
+###		{int number=tMAINLabel;
+		int i=0;
+		fgetc(fp1);
+		fscanf(fp1,"%d",&i);
+		fgetc(fp1);
+		while(i!=number){
+			fscanf(fp1,"%d",&i);
+			fgetc(fp1);
+		}
+		int address	;
+		fscanf(fp1,"%d",&address);
+		rewind(fp1);
+		fprintf(fp2,"%d",address);}
 L[0-9]+:[\n]	{}
-L[0-9]+	{//printf("check2\n");
-		//printf("%s : %d\n",yytext,yyleng);
-		yytext+=1;
-		//printf("check2\n");
+L[0-9]+	{yytext+=1;
 		char num[10];
 		int i=0;
 		int j=yyleng-1;
@@ -22,27 +33,18 @@ L[0-9]+	{//printf("check2\n");
 			i++;
 			yytext+=1;
 		}
-		//printf("check2\n");
 		num[i]='\0';
 		int number=atoi(num);
 		i=0;
-		//printf("%d",number);
 		fgetc(fp1);
 		fscanf(fp1,"%d",&i);
 		fgetc(fp1);
-		//printf("%d\n",i);
 		while(i!=number){
 			fscanf(fp1,"%d",&i);
 			fgetc(fp1);
 		}
 		int address	;
 		fscanf(fp1,"%d",&address);
-		/*char numb[5];
-		numb[0]=getc(fp1);
-		numb[1]=getc(fp1);
-		numb[2]=getc(fp1);
-		numb[3]=getc(fp1);
-		numb[4]='\0';*/
 		rewind(fp1);
 		fprintf(fp2,"%d",address);}
 

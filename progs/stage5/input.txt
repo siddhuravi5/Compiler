@@ -1,6 +1,18 @@
-decl
-	int a,array[22],b;
-	int function(int a, str b,int c, int d, int e);
-	str everest, himalaya[10],him;
-	str function2(str a, int b);
-enddecl
+  decl
+   int a,b,c,c2;
+  enddecl
+
+  int main()
+  {
+   decl
+    int d,e;
+   enddecl
+
+   begin
+    read(b);
+    read(d);
+    a = d+b;
+    write(a);
+    return 0;
+   end
+  }

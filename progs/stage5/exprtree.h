@@ -23,8 +23,12 @@
 #define tSTR 22
 #define tARRAY 23
 #define tMOD 24
-#define tfunc 25
-#define tret 26
+#define tFUNC 25
+#define tRET 26
+#define tFBODY 27
+#define tAND 28
+#define tOR 29
+#define tMAINLabel 100
 #define varLoc 4096
 #define SPLoc 4121
 
@@ -47,7 +51,7 @@ struct Gsymbol *next;
 
 struct Lsymbol{
 	char*name;
-	int type
+	int type;
 	int binding;
 	struct Lsymbol* next;
 };
@@ -76,22 +80,24 @@ int getReg();
 void freeReg();
 void printRead(FILE* targetFile, int varAddr);
 void printWrite(FILE* targetFile, int regNum);
-int getVarAddr(struct tnode*root);
+int getVarAddr(FILE* fp,struct tnode*root);
 int codeGen(FILE* fp, struct tnode* root);
 struct Paramstruct* createParam(char* name,int size);
 struct Paramstruct* addParam(struct Paramstruct* root,struct Paramstruct* elt);
 void Ginstall(char* name,int type,int size,int binding,struct Paramstruct* paramlist,int flabel);
 void updateTypeToGsymbol(int type);
 void printGsymbolTable();
+void Linstall(char* name, int type);
 void Linstallbylist(struct Paramstruct* root);
 void Linstallbylistwithtype(struct Paramstruct* root, int type);
 struct Lsymbol* Llookup(char* name);
 struct Gsymbol* Glookup(char* name);
 struct tnode* appendArgList(struct tnode* root, struct tnode* elt);
+void Lprint();
+void reset_fnargumentsbinding();
 
 /*Create a node tnode*/
-struct tnode* createTree(int val, int type, char* c, int nodeType,struct Gsymbol*sym, struct tnode *l, struct tnode *r,struct tnode *third);
+struct tnode* createTree(int val, int type, char* c, int nodeType,struct Lsymbol* Lsym,struct Gsymbol* Gsym, struct tnode *l, struct tnode *r,struct tnode *third);
 
-
-struct Gsymbol* GsymbolRoot;
-struct Lsymbol* LsymbolRoot;
+struct Gsymbol* Gsymbolroot;
+struct Lsymbol* Lsymbolroot;

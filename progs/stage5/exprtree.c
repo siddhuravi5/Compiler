@@ -1,4 +1,4 @@
-int reg=0;
+int reg=1;
 int label_no=0;
 int stacktop[20];	//for continue
 int stackend[20];	//for break
@@ -13,21 +13,30 @@ int getLabel(){
 	label_no++;
 	return curr_label;
 }
-struct tnode* createTree(int val, int type, char* c, int nodeType,struct Gsymbol*sym, struct tnode *l, struct tnode *r,struct tnode *third){
+void reset_fnargumentsbinding(){
+	fnargumentsbinding=-2;
+	fnlocalvarbinding=0;
+	return;
+}
+struct tnode* createTree(int val, int type, char* c, int nodeType,struct Lsymbol* Lsym,struct Gsymbol* Gsym, struct tnode *l, struct tnode *r,struct tnode *third){
     switch(nodeType){
+    	case tVAR:
+    		//printf("%s\n",Lsym->name);
+    		break;
     	case tADD:
     	case tSUB:
     	case tMUL:
     	case tDIV:
     	case tMOD:
-    		if(l->type!= r->type || l->type != tINT){
+    		type=tINT;
+    		/*if(l->type!= r->type || l->type != tINT){
     			printf("type: %d %d %d\n",l->type,r->type,nodeType);
     			printf("\ntype mismatch error1\n");
     			exit(0);
     		}
     		else{
     			type=tINT;
-    		}
+    		}*/
     		break;
     	case tLT:
     	case tGT:
@@ -35,7 +44,8 @@ struct tnode* createTree(int val, int type, char* c, int nodeType,struct Gsymbol
     	case tGE:
     	case tNE:
     	case tEQ:
-    		if(l->type!= r->type || l->type !=tINT){
+    		type=tBOOL;
+    		/*if(l->type!= r->type || l->type !=tINT){
     			printf("type : %d %d\n",l->type,r->type);
     			printf("\ntype mismatch error2\n");
     			exit(0);
@@ -43,19 +53,20 @@ struct tnode* createTree(int val, int type, char* c, int nodeType,struct Gsymbol
     		else{
     			type=tBOOL;
     		
-    		}break;
+    		}*/
+    		break;
     	case tASSIGN:
-    		if(l->nodetype!=tVAR && l->nodetype!=tARRAY){
+    		/*if(l->nodetype!=tVAR && l->nodetype!=tARRAY){
     			printf("\ntype mismatch error3\n");
     			exit(0);
-    		}
+    		}*/
     		break;
     	case tWHILE:
     	case tIF:
-    		if(l->type!=tBOOL){
+    		/*if(l->type!=tBOOL){
     			printf("\ntype mismatch error4\n");
     			exit(0);
-    		}
+    		}*/
     		break;
     }
     struct tnode *temp;
@@ -64,7 +75,8 @@ struct tnode* createTree(int val, int type, char* c, int nodeType,struct Gsymbol
     temp->type = type;
     temp->varname = c;
     temp->nodetype = nodeType;
-    temp->Gentry=sym;
+    temp->Lentry=Lsym;
+    temp->Gentry=Gsym;
     temp->left=l;
     temp->right = r;
     temp->third=third;
@@ -100,8 +112,8 @@ void Ginstall(char* name,int type,int size,int binding,struct Paramstruct* param
 	
 	int label;
 	
-	struct Gsymbol* ptr=GsymbolRoot;
-	struct Gsymbol* ptr2=GsymbolRoot;
+	struct Gsymbol* ptr=Gsymbolroot;
+	struct Gsymbol* ptr2=Gsymbolroot;
 	if(ptr==NULL){
 		if(size!=-1)	//variable check
 			temp->binding=4096;
@@ -109,7 +121,7 @@ void Ginstall(char* name,int type,int size,int binding,struct Paramstruct* param
 			label=getLabel();
 			temp->flabel=label;
 		}
-		GsymbolRoot=temp;
+		Gsymbolroot=temp;
 		return;
 	}
 	while(ptr->next!=NULL){
@@ -142,7 +154,7 @@ void Ginstall(char* name,int type,int size,int binding,struct Paramstruct* param
 }
 void updateTypeToGsymbol(int type){
 	struct Gsymbol* ptr;
-	ptr=GsymbolRoot;
+	ptr=Gsymbolroot;
 	while(ptr!=NULL){
 		if(ptr->type==-1){
 			ptr->type=type;
@@ -151,8 +163,8 @@ void updateTypeToGsymbol(int type){
 	}
 }
 void printGsymbolTable(){
-	printf("Symbol Table\n");
-	struct Gsymbol*ptr=GsymbolRoot;
+	printf("Global Symbol Table\n");
+	struct Gsymbol*ptr=Gsymbolroot;
 	struct Paramstruct* tmp;
 	while(ptr!=NULL){
 		printf("%s %d %d %d F%d\n",ptr->name,ptr->type,ptr->size,ptr->binding,ptr->flabel);
@@ -165,9 +177,17 @@ void printGsymbolTable(){
 	}
 	return;
 }
+void Lprint(){
+	printf("Local Symbol Table\n");
+	struct Lsymbol*ptr=Lsymbolroot;
+	while(ptr!=NULL){
+		printf("%s %d %d\n",ptr->name,ptr->type,ptr->binding);
+		ptr=ptr->next;
+	}
+	return;
+}
 void Linstallbylist(struct Paramstruct* root){
-	struct Paramstruct* ptr;
-	struct Lsymbol* tmp;
+	struct Lsymbol* tmp,*ptr;
 	ptr=Lsymbolroot;
 	while(ptr->next!=NULL){
 		ptr=ptr->next;
@@ -182,7 +202,7 @@ void Linstallbylist(struct Paramstruct* root){
 			Lsymbolroot=tmp;
 			ptr=Lsymbolroot;
 		}else{
-			ptr->next=root;
+			ptr->next=tmp;
 			ptr=ptr->next;
 		}
 		root=root->next;
@@ -190,11 +210,12 @@ void Linstallbylist(struct Paramstruct* root){
 	
 }
 void Linstallbylistwithtype(struct Paramstruct* root, int type){		//inserting local variables
-	struct Paramstruct* ptr;
-	struct Lsymbol* tmp;
+	struct Lsymbol* tmp,*ptr;
 	ptr=Lsymbolroot;
-	while(ptr->next!=NULL){
-		ptr=ptr->next;
+	if(ptr){
+		while(ptr->next!=NULL){
+			ptr=ptr->next;
+		}
 	}
 	while(root!=NULL){
 		tmp=(struct Lsymbol*)malloc(sizeof(struct Lsymbol));
@@ -206,18 +227,37 @@ void Linstallbylistwithtype(struct Paramstruct* root, int type){		//inserting lo
 			Lsymbolroot=tmp;
 			ptr=Lsymbolroot;
 		}else{
-			ptr->next=root;
+			ptr->next=tmp;
 			ptr=ptr->next;
 		}
 		root=root->next;
 	}
 }
+void Linstall(char* name, int type){
+	printf("---------------------\n");
+	struct Lsymbol* tmp=(struct Lsymbol*)malloc(sizeof(struct Lsymbol));
+	tmp->name = name;
+	tmp->type=type;
+	tmp->binding=(--fnargumentsbinding);
+	if(Lsymbolroot==NULL){
+		Lsymbolroot=tmp;
+		return;
+	}
+	struct Lsymbol* ptr=Lsymbolroot;
+	while(ptr->next!=NULL){
+		ptr=ptr->next;
+	}
+	ptr->next=tmp;
+	return;
+}
 struct Lsymbol* Llookup(char* name){
 	struct Lsymbol* ptr = Lsymbolroot;
 	while(ptr!=NULL){
+		//printf("%s %s\n",ptr->name,name);
 		if(strcmp(ptr->name,name)==0){
 			return ptr;
 		}
+		//printf("%s %s\n",ptr->name,name);
 		ptr=ptr->next;
 	}
 	return NULL;
@@ -242,9 +282,9 @@ struct tnode* appendArgList(struct tnode* root, struct tnode* elt){
 }
 int getSP(){
 	struct Gsymbol* ptr;
-	ptr=GsymbolRoot;
+	ptr=Gsymbolroot;
 	int spval=4096;
-	while(ptr->next!=NULL){
+	while(ptr!=NULL){
 		if(ptr->binding!=-1){
 			spval=ptr->binding+ptr->size;
 		}
@@ -255,7 +295,7 @@ int getSP(){
 /*
 void updateSizeToLatestId(int size){
 	struct Gsymbol* ptr;
-	ptr=GsymbolRoot;
+	ptr=Gsymbolroot;
 	while(ptr->next!=NULL){
 		ptr=ptr->next;
 	}
@@ -264,7 +304,7 @@ void updateSizeToLatestId(int size){
 */
 void printSymbolTable(){
 	printf("symbol type\n");
-	struct Gsymbol*ptr=GsymbolRoot;
+	struct Gsymbol*ptr=Gsymbolroot;
 	while(ptr!=NULL){
 		printf("%s %d %d %d\n",ptr->name,ptr->type,ptr->size,ptr->binding);
 		ptr=ptr->next;
@@ -280,15 +320,15 @@ void install(char *name, int type, int size){
 	temp->type=type;
 	temp->size=size;
 	temp->next=NULL;
-	//temp->next=GsymbolRoot;
-	//GsymbolRoot=temp;
+	//temp->next=Gsymbolroot;
+	//Gsymbolroot=temp;
 	//printSymbolTable();
 	//return;
 	
-	ptr=GsymbolRoot;
+	ptr=Gsymbolroot;
 	if(ptr==NULL){
 		temp->binding=4096;
-		GsymbolRoot=temp;
+		Gsymbolroot=temp;
 		return;
 	}
 	while(ptr->next!=NULL){
@@ -309,7 +349,7 @@ void install(char *name, int type, int size){
 */
 /*
 struct Gsymbol *lookup(char * name){
-	struct Gsymbol* temp=GsymbolRoot;
+	struct Gsymbol* temp=Gsymbolroot;
 	while(temp!=NULL){
 		if(strcmp(temp->name,name)==0)
 		{
@@ -372,22 +412,137 @@ void printWrite(FILE* targetFile, int regNum){
 	freeReg();
 }
 
-int getVarAddr(struct tnode*root){
+int getVarAddr(FILE* fp,struct tnode*root){
 	char* varName=root->varname;
 	int varAddr;
-	if(root->val>-1){
+	int s;
+	if(root->val>-1){ //array
 		varAddr=root->Gentry->binding+ root->val;
-	}else
-		varAddr = root->Gentry->binding;
+	}else{
+		if(root->Lentry){
+			s=getReg();
+			varAddr = root->Lentry->binding;
+			fprintf(fp,"MOV R%d, %d\n",s,varAddr);
+			fprintf(fp,"ADD R%d, BP\n",s);
+			return s;
+		}
+		else
+			varAddr = root->Gentry->binding;		
+	}
 	return varAddr;
 }
 
 int codeGen(FILE* fp, struct tnode* root){
-	int r,sourceReg,destReg,varAddr,label_1,label_2,label_3;
+	int r,s,regcount[20],regptr=-1,sourceReg,destReg,varAddr,label_1,label_2,label_3;
 	char* varName;
 	char* string;
+	struct Lsymbol* ptr;
+	struct Gsymbol* tmp;
+	struct tnode* node;
 	if(root==NULL) return -1;
 	switch(root->nodetype){
+		
+		case tFBODY:
+				freeAllReg();
+				if(root->varname==NULL || (root->right && root->right->val==tMAINLabel)){
+					//printf("main");
+					fprintf(fp,"L%d:\n",tMAINLabel);
+					s=getSP();
+					fprintf(fp,"MOV SP, %d\n",s);
+				}else{
+					tmp=Gsymbolroot;
+					while(tmp!=NULL && strcmp(tmp->name,root->varname)!=0){
+						printf("%s\n",tmp->name);
+						tmp=tmp->next;
+					}
+					if(tmp==NULL){
+						printf("%s\n",root->varname);
+						printf("Undeclared fn error\n");
+						exit(0);
+					}
+					fprintf(fp,"L%d:\n",tmp->flabel);
+				}
+				fprintf(fp,"PUSH BP\n");
+				fprintf(fp,"MOV BP,SP\n");
+				ptr=Lsymbolroot;
+				//reserve space for local variables NOt for arguments
+				while(ptr!=NULL){
+					if(ptr->binding>0)
+						fprintf(fp,"PUSH R0\n");
+					ptr=ptr->next;
+				}
+				codeGen(fp,root->left);
+				codeGen(fp,root->right);
+				freeAllReg();
+				return -1;
+		case tRET:
+				if(root->val!=tMAINLabel){
+					destReg=codeGen(fp,root->left);
+					//save return value
+					s=getReg();
+					fprintf(fp,"MOV R%d,BP\n",s);
+					fprintf(fp,"SUB R%d,2\n",s);
+					fprintf(fp,"MOV [R%d],R%d\n",s,destReg);
+				}
+				ptr=Lsymbolroot;
+				//remove space allocated for local variables
+				while(ptr!=NULL){
+					if(ptr->binding>0)
+						fprintf(fp,"POP R0\n");
+					ptr=ptr->next;
+				}
+				//restore old value of BP
+				fprintf(fp,"POP BP\n");
+				if(root->val==tMAINLabel){
+					printExit(fp);
+				}else{
+					fprintf(fp,"RET\n");
+				}
+				
+				return -1;
+		case tFUNC:
+				node=root->left;	//1st arg (can be null also)
+				int argArray[25];
+				int argArrayInd=-1;
+				
+				while(node!=NULL){
+					sourceReg=codeGen(fp,node);
+					argArray[(++argArrayInd)]=sourceReg;
+					node=node->third;	//arg list
+				}
+				//push registers in use
+				++regptr;
+				regcount[regptr]=reg;
+				for(int j=0;j<regcount[regptr];j++){
+					fprintf(fp,"PUSH R%d\n",j);
+				}
+				//push arguments to fn in reverse order
+				for(int j=argArrayInd;j>=0;j--){
+					fprintf(fp,"PUSH R%d\n",argArray[j]);
+				}
+				//push empty space for return value
+				fprintf(fp,"PUSH R0\n");
+				fprintf(fp,"CALL L%d\n",root->Gentry->flabel);
+				
+				//after returning from fn call
+				
+				sourceReg= getReg();
+				//save the result
+				fprintf(fp,"MOV R%d,[SP]\n",sourceReg);
+				//pop out result space
+				fprintf(fp,"POP R0\n");
+				//pop out args from stack
+				for(int j=argArrayInd;j>=0;j--){
+					fprintf(fp,"POP R0\n");
+				}
+				
+				//restore machine registers
+				for(int j=regcount[regptr]-1;j>=0;j--){
+					fprintf(fp,"POP R%d\n",j);
+				}
+				regptr--;
+				return sourceReg;
+				
 		case tCONNECT: 
 				freeAllReg();
 				codeGen(fp,root->left);
@@ -398,9 +553,20 @@ int codeGen(FILE* fp, struct tnode* root){
 				if(root->left==NULL) {printf("\ninvalid read stmt\n");exit(0);}
 				//varName = (root->left)->varname;
 				if(root->left->nodetype!=tARRAY){
-					varAddr = root->left->Gentry->binding;
-					printRead(fp,varAddr);
+					if(root->left->Lentry){
+						varAddr= root->left->Lentry->binding;
+						r=getReg();
+						fprintf(fp,"MOV R%d, BP\n",r);
+						fprintf(fp,"ADD R%d,%d\n",r,varAddr);
+						//fprintf(fp,"MOV R%d,r\n",r,varAddr);
+						printReadReg(fp,r);
+					}else{
+						varAddr = root->left->Gentry->binding;
+						printRead(fp,varAddr);
+					}
+					
 				}else{
+					//array
 					destReg=codeGen(fp,root->left->left);
 					r=getReg();
 					fprintf(fp,"MOV R%d, %d\n",r,root->left->Gentry->binding);
@@ -416,7 +582,7 @@ int codeGen(FILE* fp, struct tnode* root){
 		case tARRAY:
 				r=getReg();
 				destReg=codeGen(fp,root->left);
-				if(root->Gentry==NULL) {printf("wow\n");exit(0);}
+				if(root->Gentry==NULL) {printf("array not in Gsymbol\n");exit(0);}
 				fprintf(fp,"MOV R%d, %d\n",r,root->Gentry->binding);	
 				//printf("%d\n",root->Gentry->binding);
 				fprintf(fp,"ADD R%d, R%d\n",r,destReg);
@@ -428,9 +594,20 @@ int codeGen(FILE* fp, struct tnode* root){
 				}
 		case tVAR:
 				r=getReg();
-				varName=root->varname;
-				varAddr = root->Gentry->binding;
-				fprintf(fp,"MOV R%d,[%d]\n",r,varAddr);
+	
+				if(root->Lentry!=NULL){
+					varAddr = root->Lentry->binding;
+					s=getReg();
+					fprintf(fp,"MOV R%d,BP\n",s);
+					fprintf(fp,"ADD R%d,%d\n",s,varAddr);
+					fprintf(fp,"MOV R%d,[R%d]\n",r,s);
+				}else{
+					if(root->Gentry==NULL){
+						printf("Undeclared variable used error\n");
+					}
+					varAddr = root->Gentry->binding;
+					fprintf(fp,"MOV R%d,[%d]\n",r,varAddr);
+				}
 				return r;
 		case tWRITE:	
 				r=codeGen(fp,root->left);
@@ -439,26 +616,37 @@ int codeGen(FILE* fp, struct tnode* root){
 				return -1;
 		case tASSIGN:
 				if(root->left->nodetype!=tARRAY){
-					sourceReg=getVarAddr(root->left);
-					if(root->right->type==tINT){
+					sourceReg=getVarAddr(fp,root->left);
+					if(root->right->type!=tSTR){
 						destReg=codeGen(fp,root->right);
-						fprintf(fp,"MOV [%d],R%d\n",sourceReg,destReg);
+						if(sourceReg<25){
+							fprintf(fp,"MOV [R%d],R%d\n",sourceReg,destReg);	//BP relative addr
+						}else{
+							fprintf(fp,"MOV [%d],R%d\n",sourceReg,destReg);
+						}
 					}else{
 						string=root->right->varname;
-						fprintf(fp,"MOV [%d],%s\n",sourceReg,string);
+						if(sourceReg<25){
+							printf("CCCCCCCc\n");
+							fprintf(fp,"MOV [R%d],%s\n",sourceReg,string);	//BP relative addr
+						}else{
+							fprintf(fp,"MOV [%d],%s\n",sourceReg,string);
+						}
 					}
 				}
 				else{
+					//array
 					addrbool=1;
 					sourceReg=codeGen(fp,root->left);
 					addrbool=0;
 					//fprintf(fp,"MOV R%d, %d\n",r,root->Gentry->binding);
 					//fprintf(fp,"ADD R%d, R%d\n",r,destReg);
-					if(root->right->type==tINT){
+					if(root->right->type!=tSTR){
 						destReg=codeGen(fp,root->right);
 						fprintf(fp,"MOV [R%d],R%d\n",sourceReg,destReg);
 					}else{
 						string=root->right->varname;
+						printf("ZZZZZZ\n");
 						fprintf(fp,"MOV [R%d],%s\n",sourceReg,string);
 					}
 				}
@@ -522,6 +710,18 @@ int codeGen(FILE* fp, struct tnode* root){
 				sourceReg=codeGen(fp,root->left);
 				destReg=codeGen(fp,root->right);
 				fprintf(fp,"NE R%d, R%d\n",sourceReg,destReg);
+				freeReg();
+				return sourceReg;
+		case tAND:
+				sourceReg=codeGen(fp,root->left);
+				destReg=codeGen(fp,root->right);
+				fprintf(fp,"MUL R%d, R%d\n",sourceReg,destReg);
+				freeReg();
+				return sourceReg;
+		case tOR:
+				sourceReg=codeGen(fp,root->left);
+				destReg=codeGen(fp,root->right);
+				fprintf(fp,"ADD R%d, R%d\n",sourceReg,destReg);
 				freeReg();
 				return sourceReg;
 		case tBREAK:

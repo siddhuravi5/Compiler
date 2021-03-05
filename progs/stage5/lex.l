@@ -3,18 +3,15 @@
 	#include <stdio.h>
 	#include "y.tab.h"
 	#include "exprtree.h"
-	int declbool=0;
-	int number;
 	char* string;
-	//struct Gysmbol* groot;
 %}
 
 %%
 
-begin	{return begin;}
+begin	{printf("begin\n");return begin;}
 end 	{return END;}
-decl	{declbool=1;return DECL;}
-enddecl	{declbool=0;return ENDDECL;}
+decl	{printf("decl\n");return DECL;}
+enddecl {return ENDDECL;}
 int	{return INT;}
 str	{return STR;}
 break	{return BREAK;}
@@ -22,6 +19,8 @@ continue	{return CONTINUE;}
 read 	{return READ;}
 write 	{return WRITE;}
 main	{return MAIN;}
+AND	{return AND;}
+OR	{return OR;}
 then 	{return then;}
 else 	{return ELSE;}
 return  {return RET;}
@@ -49,6 +48,8 @@ while	{return WHILE;}
 ","	{return yytext[0];}
 "["	{return yytext[0];}
 "]"	{return yytext[0];}
+"{"	{return yytext[0];}
+"}"	{return yytext[0];}
 ";" {return EOL;}
 [ \t]	{}
 [' '] {}

@@ -83,7 +83,9 @@ extern int yydebug;
     STRING = 289,
     MOD = 290,
     RET = 291,
-    MAIN = 292
+    MAIN = 292,
+    AND = 293,
+    OR = 294
   };
 #endif
 /* Tokens.  */
@@ -122,6 +124,8 @@ extern int yydebug;
 #define MOD 290
 #define RET 291
 #define MAIN 292
+#define AND 293
+#define OR 294
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -134,7 +138,7 @@ union YYSTYPE
 	char* c;
 	struct Paramstruct* paramptr;
 
-#line 138 "y.tab.h"
+#line 142 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
