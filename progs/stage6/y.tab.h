@@ -85,7 +85,12 @@ extern int yydebug;
     RET = 291,
     MAIN = 292,
     AND = 293,
-    OR = 294
+    OR = 294,
+    TYPEDECL = 295,
+    ENDTYPE = 296,
+    INIT = 297,
+    ALLOC = 298,
+    FREE = 299
   };
 #endif
 /* Tokens.  */
@@ -126,19 +131,26 @@ extern int yydebug;
 #define MAIN 292
 #define AND 293
 #define OR 294
+#define TYPEDECL 295
+#define ENDTYPE 296
+#define INIT 297
+#define ALLOC 298
+#define FREE 299
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 16 "parser.y"
+#line 17 "parser.y"
 
 	struct tnode* p;
 	int n;
 	char* c;
 	struct Paramstruct* paramptr;
+	struct Typetable* type;
+	struct Fieldlist* fieldlist;
 
-#line 142 "y.tab.h"
+#line 154 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -627,7 +627,7 @@ int codeGen(FILE* fp, struct tnode* root){
 					}else{
 						string=root->right->varname;
 						if(sourceReg<25){
-							printf("CCCCCCCc\n");
+							//printf("CCCCCCCc\n");
 							fprintf(fp,"MOV [R%d],%s\n",sourceReg,string);	//BP relative addr
 						}else{
 							fprintf(fp,"MOV [%d],%s\n",sourceReg,string);
@@ -646,7 +646,7 @@ int codeGen(FILE* fp, struct tnode* root){
 						fprintf(fp,"MOV [R%d],R%d\n",sourceReg,destReg);
 					}else{
 						string=root->right->varname;
-						printf("ZZZZZZ\n");
+						//printf("ZZZZZZ\n");
 						fprintf(fp,"MOV [R%d],%s\n",sourceReg,string);
 					}
 				}

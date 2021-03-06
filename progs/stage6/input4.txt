@@ -1,29 +1,57 @@
+type
+  node
+  {
+    int d;
+    int s;
+    int t;
+  }
+endtype
+
 decl
- int fun(int x),a;
+  node y,z,gcd(int a,int b);
 enddecl
 
-int fun(int x)
+node gcd(int a,int b)
 {
- begin
-  if(x >= 91) then
-   a = 91;
-  else
-   a = fun(fun(x+11));
-  endif;
-  return a;
- end
+  decl
+    int q,r,temp;
+  enddecl
+
+  begin
+    if(b==0) then
+      y.d = a;
+      y.s = 1;
+      y.t = 0;
+    else
+      q = a/b;
+      r = a%b;
+      z = gcd(b,r);
+      temp = z.s;
+      y.s = z.t;
+      y.t = temp - (q*z.t);
+    endif;
+
+  return y;
+  end
 }
 
 int main()
 {
- decl
-  int b,c;
- enddecl
+  decl
+    node res;
+    int a,b,c;
+  enddecl
 
- begin
-  read(b);
-  c = fun(b);
-  write(c);
+  begin
+    c = initialize();
+    y = alloc();
+    read(a);
+    read(b);
+    res = gcd(a,b);
+    write(res.d);
+    write(res.s);
+    write(res.t);
+
   return 0;
- end
+  end
 }

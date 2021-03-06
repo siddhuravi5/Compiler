@@ -1,4 +1,4 @@
-int reg=1;
+int reg=0;
 int label_no=0;
 int stacktop[20];	//for continue
 int stackend[20];	//for break
@@ -9,14 +9,27 @@ int fnlocalvarbinding=0;
 int fnargumentsbinding=-2;
 int dynamicbinding=2047;
 
-struct Typetable typeroot=NULL;
+struct Typetable* typeroot=NULL;
 
 int getdynamicbinding(){
 	int r=dynamicbinding;
 	dynamicbinding--;
 	return r;
 }
-
+struct Typetable* fieldtypelookup(char* name1,char* name2){
+	struct Typetable* tmp=typelookup(name1);
+	//printf("%s\n",tmp->name);
+	struct Fieldlist* f=tmp->fields;
+	while(f!=NULL){
+		//printf("%s, %s\n",f->name,name2);
+		if(strcmp(f->name,name2)==0){
+			return f->type;
+		}
+		f=f->next;
+	}
+	printf("\nundeclared type var3\n");
+	exit(0);
+}
 struct Typetable* fieldtype(char* name1,char* name2){
 	struct Lsymbol* ptr=Llookup(name1);
 	struct Gsymbol* ptr2=Glookup(name1);
@@ -25,20 +38,22 @@ struct Typetable* fieldtype(char* name1,char* name2){
 		tmp=ptr->type;
 	}else{
 		if(ptr2==NULL){
+			//printf("%s\n",name1);
 			printf("\nundeclared type var\n");
 			exit(0);
 		}
 		tmp=ptr2->type;
 	}
-	struct Fieldlist* fields=tmp->fields;
-	while(fields!=NULL){
-		if(strcmp(fields->name,name2)==0){
-			return fields->type;
+	struct Fieldlist* f=tmp->fields;
+	while(f!=NULL){
+		//printf("%s\n",f->name);
+		if(strcmp(f->name,name2)==0){
+			return f->type;
 		}
-		fields=fields->next;
+		f=f->next;
 	}
 	printf("\nundeclared type var2\n");
-			exit(0);
+	exit(0);
 }
 
 struct Fieldlist* fieldinstall(char* name,struct Typetable* type){
@@ -46,23 +61,29 @@ struct Fieldlist* fieldinstall(char* name,struct Typetable* type){
 	ptr= (struct Fieldlist*) malloc(sizeof(struct Fieldlist));
 	ptr->name=name;
 	ptr->type=type;
-	ptr->fieldIndex
+	//ptr->fieldIndex=0;
+	return ptr;
 }
 struct Fieldlist* fieldappend(struct Fieldlist* root,struct Fieldlist* elt){
 	struct Fieldlist* ptr=root;
 	while(ptr->next!=NULL){
 		ptr=ptr->next;
 	}
-	elt->fieldindex=ptr->fieldindex+1;
+	elt->fieldIndex=ptr->fieldIndex+1;
 	ptr->next=elt;
 	return root;
 }
-void typeinstall(char* name,int size, struct Fieldlist *fields){
+void typeinstallwithfields(char* name,int size, struct Fieldlist *fields){
+	struct Typetable* ptr;
+	ptr=typelookup(name);
+	ptr->size=size;
+	ptr->fields=fields;
+}
+void typeinstall(char* name){
 	struct Typetable* ptr,*tmp;
 	ptr= (struct Typetable*) malloc(sizeof(struct Typetable));
 	ptr->name=name;
-	ptr->size=size;
-	ptr->fields=fields;
+	ptr->next=NULL;
 	if(typeroot==NULL){
 		typeroot=ptr;
 	}else{
@@ -74,24 +95,32 @@ void typeinstall(char* name,int size, struct Fieldlist *fields){
 	}
 }
 
-typeinstall("int",1,NULL);
-typeinstall("str",1,NULL);
-typeinstall("bool",1,NULL);
-typeinstall("void",1,NULL);
-typeinstall("NULL",1,NULL);
-
 struct Typetable* typelookup(char*name){
 	struct Typetable* ptr=typeroot;
 	while(ptr!=NULL){
+		//printf("%s z %s\n",ptr->name,name);
 		if(strcmp(ptr->name,name)==0){
 			return ptr;
 		}
 		ptr=ptr->next;
 	}
+	typeinstall(name);
+	return typelookup(name);
 	printf("\nType not defined priorly\n");
 	exit(0);
 }
-
+void printTypeTable(){
+	struct Typetable* ptr=typeroot;
+	printf("TYPE TABLE\n");
+	int i=0;
+	while(ptr!=NULL){
+		printf("%s\n",ptr->name);
+		ptr=ptr->next;
+		i++;
+		if(i>12) break;
+	}
+	printf("--------------\n");
+}
 struct Typetable* typesearch(char *name){
 	struct Lsymbol* ptr=Llookup(name);
 	struct Gsymbol* ptr2=Glookup(name);
@@ -99,9 +128,11 @@ struct Typetable* typesearch(char *name){
 		return ptr->type;	
 	}else{
 		if(ptr2==NULL){
+			printf("\n%s\n",name);
 			printf("\nUndeclared variable used\n");
-			return ptr2->type;
+			exit(0);
 		}
+		return ptr2->type;
 	}
 }
 
@@ -140,15 +171,15 @@ struct tnode* createTree(int val, struct Typetable* type, char* c, int nodeType,
     	case tMUL:
     	case tDIV:
     	case tMOD:
-    		type=tINT;
-    		if(l->type!= r->type || l->type != typelookup("int")){
-    			printf("type: %d %d %d\n",l->type,r->type,nodeType);
+    		type=typelookup("int");
+    		/*if(l->type!= r->type){
+    			//printf("type: %d %d %d\n",l->type,r->type,nodeType);
     			printf("\ntype mismatch error1\n");
     			exit(0);
     		}
     		else{
-    			type=tINT;
-    		}
+    			type=typelookup("tINT");
+    		}*/
     		break;
     	case tLT:
     	case tGT:
@@ -157,15 +188,16 @@ struct tnode* createTree(int val, struct Typetable* type, char* c, int nodeType,
     	case tNE:
     	case tEQ:
     		//type=tBOOL;
-    		if(l->type!= r->type || l->type !=typelookup("int")){
-    			printf("type : %d %d\n",l->type,r->type);
+    		/*if(l->type!= r->type || l->type !=typelookup("int")){
+    			//printf("type : %d %d\n",l->type,r->type);
     			printf("\ntype mismatch error2\n");
     			exit(0);
     		}
     		else{
-    			type=tBOOL;
+    			type=typelookup("bool");
     		
-    		}
+    		}*/
+    		type=typelookup("bool");
     		break;
     	case tASSIGN:
     		/*if(l->nodetype!=tVAR && l->nodetype!=tARRAY){
@@ -279,10 +311,10 @@ void printGsymbolTable(){
 	struct Gsymbol*ptr=Gsymbolroot;
 	struct Paramstruct* tmp;
 	while(ptr!=NULL){
-		printf("%s %d %d %d F%d\n",ptr->name,ptr->type,ptr->size,ptr->binding,ptr->flabel);
+		printf("%s %d %d F%d\n",ptr->name,ptr->size,ptr->binding,ptr->flabel);
 		tmp=ptr->paramlist;
 		while(tmp!=NULL){
-			printf("	%s %d\n",tmp->name,tmp->type);
+			printf("	%s\n",tmp->name);
 			tmp=tmp->next;
 		}
 		ptr=ptr->next;
@@ -293,7 +325,7 @@ void Lprint(){
 	printf("Local Symbol Table\n");
 	struct Lsymbol*ptr=Lsymbolroot;
 	while(ptr!=NULL){
-		printf("%s %d %d\n",ptr->name,ptr->type,ptr->binding);
+		printf("%s %d\n",ptr->name,ptr->binding);
 		ptr=ptr->next;
 	}
 	return;
@@ -386,10 +418,10 @@ struct Gsymbol* Glookup(char* name){
 }
 struct tnode* appendArgList(struct tnode* root, struct tnode* elt){
 	struct tnode* ptr=root;
-	while(root->third!=NULL){
-		root=root->third;
+	while(ptr->third!=NULL){
+		ptr=ptr->third;
 	}
-	root->third=elt;
+	ptr->third=elt;
 	return root;
 }
 int getSP(){
@@ -418,7 +450,7 @@ void printSymbolTable(){
 	printf("symbol type\n");
 	struct Gsymbol*ptr=Gsymbolroot;
 	while(ptr!=NULL){
-		printf("%s %d %d %d\n",ptr->name,ptr->type,ptr->size,ptr->binding);
+		printf("%s %d %d\n",ptr->name,ptr->size,ptr->binding);
 		ptr=ptr->next;
 	}
 	return;
@@ -505,17 +537,18 @@ void freeReg(){
 }
 void freeAllReg(){
 	reg=0;
-int printAlloc(FILE* targetFile,){
+}
+int printAlloc(FILE* targetFile){
 	int s=getReg();
 	int r=getReg();
 	fprintf(targetFile,"MOV R%d, \"alloc\"\nPUSH R%d\nMOV R%d, 8\nPUSH R%d\nPUSH R%d\nPUSH R%d\nPUSH R%d\nCALL 0\nPOP R%d\nPOP R%d\nPOP R%d\nPOP R%d\nPOP R%d\nBRKP\n",r,r,r,r,r,r,r,s,r,r,r,r);
 	freeReg();
 	return s;
 }
-int printInit(FILE* targetFile,){
+int printInit(FILE* targetFile){
 	int s=getReg();
 	int r=getReg();
-	fprintf(targetFile,"MOV R%d, \"alloc\"\nPUSH R%d\nMOV R%d, 8\nPUSH R%d\nPUSH R%d\nPUSH R%d\nPUSH R%d\nCALL 0\nPOP R%d\nPOP R%d\nPOP R%d\nPOP R%d\nPOP R%d\nBRKP\n",r,r,r,r,r,r,r,s,r,r,r,r);
+	fprintf(targetFile,"MOV R%d, \"init\"\nPUSH R%d\nMOV R%d, 8\nPUSH R%d\nPUSH R%d\nPUSH R%d\nPUSH R%d\nCALL 0\nPOP R%d\nPOP R%d\nPOP R%d\nPOP R%d\nPOP R%d\nBRKP\n",r,r,r,r,r,r,r,s,r,r,r,r);
 	freeReg();
 	return s;
 }
@@ -536,7 +569,42 @@ void printWrite(FILE* targetFile, int regNum){
 	fprintf(targetFile,"MOV R%d, \"Write\"\nPUSH R%d\nMOV R%d, -2\nPUSH R%d\nMOV R%d,R%d\nPUSH R%d\nPUSH R%d\nPUSH R%d\nCALL 0\nPOP R%d\nPOP R%d\nPOP R%d\nPOP R%d\nPOP R%d\nBRKP\n",r,r,r,r,r,regNum,r,r,r,r,r,r,r,r);
 	freeReg();
 }
-
+int getVarAddrForDotType(FILE* fp,struct tnode*root){
+	if(root->nodetype==tTYPEFIELD){
+		int r=getReg();
+		int s=0;
+		if(root->Lentry){
+			s=root->Lentry->binding;
+			fprintf(fp,"MOV R%d, %d\n",r,s);
+			fprintf(fp,"ADD R%d, BP\n",r);
+		}else {
+			s=root->Gentry->binding;
+			fprintf(fp,"MOV R%d, %d\n",r,s);
+		}
+		fprintf(fp,"MOV R%d,[R%d]\n",r,r);
+		return r;
+	}
+	if(root->nodetype==tFIELD){
+		struct Fieldlist* f;
+		f=root->type->fields;
+		while(f!=NULL){
+			if(strcmp(f->name,root->varname)==0){
+				int r=getReg();
+				fprintf(fp,"MOV R%d, %d\n",r,f->fieldIndex);
+				return r;
+			}
+			f=f->next;
+		}
+		printf("error12\n");
+		exit(0);
+	}
+	if(root->nodetype==tDOT){
+		int l=getVarAddrForDotType(fp,root->left);
+		int r=getVarAddrForDotType(fp,root->right);
+		fprintf(fp,"ADD R%d,R%d\n",l,r);
+		return l;
+	}
+}
 int getVarAddr(FILE* fp,struct tnode*root){
 	char* varName=root->varname;
 	int varAddr;
@@ -544,17 +612,18 @@ int getVarAddr(FILE* fp,struct tnode*root){
 	if(root->val>-1){ //array
 		varAddr=root->Gentry->binding+ root->val;
 	}else{
+		s=getReg();
 		if(root->Lentry){
-			s=getReg();
 			varAddr = root->Lentry->binding;
 			fprintf(fp,"MOV R%d, %d\n",s,varAddr);
 			fprintf(fp,"ADD R%d, BP\n",s);
-			return s;
 		}
-		else
-			varAddr = root->Gentry->binding;		
+		else{
+			varAddr = root->Gentry->binding;
+			fprintf(fp,"MOV R%d, %d\n",s,varAddr);		
+		}
 	}
-	return varAddr;
+	return s;
 }
 
 int codeGen(FILE* fp, struct tnode* root){
@@ -564,7 +633,7 @@ int codeGen(FILE* fp, struct tnode* root){
 	struct Lsymbol* ptr;
 	struct Gsymbol* tmp;
 	struct Typetable* t;
-	struct FieldList* f;
+	struct Fieldlist* f;
 	struct tnode* node;
 	if(root==NULL) return -1;
 	switch(root->nodetype){
@@ -579,7 +648,7 @@ int codeGen(FILE* fp, struct tnode* root){
 				}else{
 					tmp=Gsymbolroot;
 					while(tmp!=NULL && strcmp(tmp->name,root->varname)!=0){
-						printf("%s\n",tmp->name);
+						//printf("%s\n",tmp->name);
 						tmp=tmp->next;
 					}
 					if(tmp==NULL){
@@ -615,7 +684,7 @@ int codeGen(FILE* fp, struct tnode* root){
 				//remove space allocated for local variables
 				while(ptr!=NULL){
 					if(ptr->binding>0)
-						fprintf(fp,"POP R0\n");
+						fprintf(fp,"POP R16\n");
 					ptr=ptr->next;
 				}
 				//restore old value of BP
@@ -657,10 +726,10 @@ int codeGen(FILE* fp, struct tnode* root){
 				//save the result
 				fprintf(fp,"MOV R%d,[SP]\n",sourceReg);
 				//pop out result space
-				fprintf(fp,"POP R0\n");
+				fprintf(fp,"POP R16\n");
 				//pop out args from stack
 				for(int j=argArrayInd;j>=0;j--){
-					fprintf(fp,"POP R0\n");
+					fprintf(fp,"POP R16\n");
 				}
 				
 				//restore machine registers
@@ -721,7 +790,7 @@ int codeGen(FILE* fp, struct tnode* root){
 				}
 		case tVAR:
 				r=getReg();
-	
+				//printf("QQQQQQQQQQQQQQQQQQQQQQQqqqq %d\n",r);
 				if(root->Lentry!=NULL){
 					varAddr = root->Lentry->binding;
 					s=getReg();
@@ -742,44 +811,47 @@ int codeGen(FILE* fp, struct tnode* root){
 				return r;
 
 		case tINIT:
+				//printf("\nIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII\n");
 				r=printInit(fp);
 				return r;
 		
 		case tDOT:
 				sourceReg=codeGen(fp,root->left);	//contains base address
-				destReg=codeGen(fp,root>right);	//contains field index
-				fprintf(fp,"ADD R%d,R%d",sourceReg,destReg);
-				fprintf(fp,"ADD R%d,[R%d]",destReg,sourceReg);
+				destReg=codeGen(fp,root->right);	//contains field index
+				fprintf(fp,"ADD R%d,R%d\n",sourceReg,destReg);
+				fprintf(fp,"MOV R%d,[R%d]\n",destReg,sourceReg);
 				return destReg;
 
 		case tTYPEFIELD:
 				r=getReg();
+				s=0;
 				if(root->Lentry){
 					s=root->Lentry->binding;
-					fprintf(fp,"MOV R%d,%d\n",r,s);
-					return r;
-				}else{
+					fprintf(fp,"MOV R%d, %d\n",r,s);
+					fprintf(fp,"ADD R%d, BP\n",r);
+				}else {
 					s=root->Gentry->binding;
-					fprintf(fp,"MOV R%d,%d\n",r,s);
-					return r;
+					fprintf(fp,"MOV R%d, %d\n",r,s);
 				}
+				fprintf(fp,"MOV R%d,[R%d]\n",r,r);
+				return r;
 		case tFIELD:
-				r=getReg();
-				if(root->Lentry){
-					t=root->Lentry->type;
-				}else{
-					t=root->Gentry->type;
-				}
-				f=t->fields;
+				
+				f=root->type->fields;
 				while(f!=NULL){
 					if(strcmp(f->name,root->varname)==0){
-						fprintf(fp,"MOV R%d,%d\n",r,f->fieldindex);
+						int r=getReg();
+						fprintf(fp,"MOV R%d, %d\n",r,f->fieldIndex);
 						return r;
 					}
 					f=f->next;
 				}
-				printf("error1");
+				printf("error12\n");
 				exit(0);
+		case tSTR:
+				r=getReg();
+				fprintf(fp,"MOV R%d,%s\n",r,root->varname);
+				return r;
 
 		case tWRITE:	
 				r=codeGen(fp,root->left);
@@ -787,33 +859,18 @@ int codeGen(FILE* fp, struct tnode* root){
 				freeAllReg();
 				return -1;
 		case tASSIGN:
-				if(root->right->nodetype==tALLOC){
-					r=printAlloc(fp);
-					if(root->left->Lentry){
-						s=root->left->Lentry->binding;
-					}else{
-						s=root->left->Gentry->binding;
-					}
-					fprintf(fp,"MOV [R%d],%d\n",r,s)
-					return -1;
-				}
 				if(root->left->nodetype!=tARRAY){
-					sourceReg=getVarAddr(fp,root->left);
-					if(root->right->type!=typelookup("str"){
+					if(root->left->nodetype!=tDOT)
+						sourceReg=getVarAddr(fp,root->left);
+					else{
+						sourceReg=getVarAddrForDotType(fp,root->left);
+					}
+					if(root->right->type!=typelookup("str")){
 						destReg=codeGen(fp,root->right);
-						if(sourceReg<25){
-							fprintf(fp,"MOV [R%d],R%d\n",sourceReg,destReg);	//BP relative addr
-						}else{
-							fprintf(fp,"MOV [%d],R%d\n",sourceReg,destReg);
-						}
+							fprintf(fp,"MOV [R%d],R%d\n",sourceReg,destReg);	
 					}else{
 						string=root->right->varname;
-						if(sourceReg<25){
-							printf("CCCCCCCc\n");
-							fprintf(fp,"MOV [R%d],%s\n",sourceReg,string);	//BP relative addr
-						}else{
-							fprintf(fp,"MOV [%d],%s\n",sourceReg,string);	//actual address
-						}
+							fprintf(fp,"MOV [R%d],%s\n",sourceReg,string);	
 					}
 				}
 				else{
@@ -828,7 +885,7 @@ int codeGen(FILE* fp, struct tnode* root){
 						fprintf(fp,"MOV [R%d],R%d\n",sourceReg,destReg);
 					}else{
 						string=root->right->varname;
-						printf("ZZZZZZ\n");
+						//printf("ZZZZZZ\n");
 						fprintf(fp,"MOV [R%d],%s\n",sourceReg,string);
 					}
 				}

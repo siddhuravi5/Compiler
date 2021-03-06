@@ -1,53 +1,53 @@
-decl 
-  int n,arr[10],i,j,dup, BubbleSort(int first, int last); 
+type
+  List
+  {
+    int data;
+    List next;
+  }
+endtype
+
+decl
+    List head;
 enddecl
-
-int BubbleSort(int first, int last)
-{
-  decl
-    int temp;
-  enddecl
-
-  begin
-    if((first < last) AND (last > 0)) then
-
-      if(arr[first] > arr[first+1]) then
-        temp = arr[first];
-        arr[first] = arr[first+1];
-        arr[first+1] = temp;
-      endif;
-
-      dup = BubbleSort(first+1, last);
-      dup = BubbleSort(first, last-1);
-    endif;
-
-    return 0;
-  end
-}
 
 int main()
 {
   decl
-    int r;
+    int length, x;
+    List p, q;
   enddecl
 
   begin
-    read(n);
+    x = initialize();
+    
+    head=null;
+    read(length); 
 
-    i=0;
-    while(i<n) do
-      read(arr[i]);
-      i = i+1;
+    q=head;
+    while (length!=0)  do
+      read(x);
+      p=alloc();
+      p.data=x;
+      p.next=null;
+
+      if (head==null) then
+      head=p;
+      q=p;
+      else
+      q.next=p;
+      q=q.next;
+      endif;
+      
+      length=length-1;
     endwhile;
 
-    r = BubbleSort(0,n-1);
-
-    i=0;
-    while(i<n) do
-      write(arr[i]);
-      i = i+1;
+    p=head;
+    while(p!=null)  do
+      write(p.data);
+      p=p.next;
     endwhile;
 
-    return 0;
+    return 1;
   end
 }
+

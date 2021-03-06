@@ -44,12 +44,12 @@ struct Typetable* type;
 struct Paramstruct* next;
 };
 
-struct FieldList{
-	char*name;
+struct Fieldlist{
+	char *name;
 	int fieldIndex;
 	struct Typetable*type;
 	struct Fieldlist* next;
-}
+};
 
 struct Typetable{
 	char* name;
@@ -102,7 +102,7 @@ void printRead(FILE* targetFile, int varAddr);
 void printWrite(FILE* targetFile, int regNum);
 int getVarAddr(FILE* fp,struct tnode*root);
 int codeGen(FILE* fp, struct tnode* root);
-struct Paramstruct* createParam(char* name,int size);
+struct Paramstruct* createParam(char* name,struct Typetable* type);
 struct Paramstruct* addParam(struct Paramstruct* root,struct Paramstruct* elt);
 void Ginstall(char* name,struct Typetable* type,int size,int binding,struct Paramstruct* paramlist,int flabel);
 void updateTypeToGsymbol(struct Typetable* type);
@@ -114,9 +114,11 @@ struct Lsymbol* Llookup(char* name);
 struct Gsymbol* Glookup(char* name);
 struct tnode* appendArgList(struct tnode* root, struct tnode* elt);
 void Lprint();
+void printTypeTable();
 void reset_fnargumentsbinding();
 struct Typetable* typelookup(char*name);
-void typeinstall(char* name,int size, struct Fieldlist *fields);
+void typeinstall(char* name);
+void typeinstallwithfields(char* name,int size, struct Fieldlist *fields);
 struct Fieldlist* fieldappend(struct Fieldlist* root,struct Fieldlist* elt);
 struct Fieldlist* fieldinstall(char *name,struct Typetable* type);
 struct Typetable* typesearch(char *name);
@@ -125,6 +127,6 @@ struct tnode* createTree(int val, struct Typetable* type, char* c, int nodeType,
 void functypecheck(struct Paramstruct* params, struct Gsymbol* fn);
 struct Typetable* fieldtype(char* name1,char* name2);
 int getdynamicbinding();
-
+struct Typetable* fieldtypelookup(char* name1,char* name2);
 struct Gsymbol* Gsymbolroot;
 struct Lsymbol* Lsymbolroot;

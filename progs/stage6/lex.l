@@ -10,7 +10,7 @@
 
 begin	{printf("begin\n");return begin;}
 end 	{return END;}
-type	{return TYPE;}
+type	{return TYPEDECL;}
 endtype {return ENDTYPE;}
 decl	{printf("decl\n");return DECL;}
 enddecl {return ENDDECL;}
@@ -19,15 +19,18 @@ continue	{return CONTINUE;}
 initialize	{return INIT;}
 alloc	{return ALLOC;}
 free	{return FREE;}
+null	{yylval.n=99;return NUM;}
+NULL	{yylval.n=99;return NUM;}
 read 	{return READ;}
 write 	{return WRITE;}
 main	{return MAIN;}
 AND	{return AND;}
+"."	{return yytext[0];}
 OR	{return OR;}
 then 	{return then;}
 else 	{return ELSE;}
 return  {return RET;}
-\".*\" {string=strdup(yytext);yylval.p=createTree(-1,typelookup("str"),string,-1,NULL,NULL,NULL,NULL,NULL);return STRING;}
+\".*\" {string=strdup(yytext);yylval.p=createTree(-1,typelookup("str"),string,tSTR,NULL,NULL,NULL,NULL,NULL);return STRING;}
 endif	{return endif;}
 if	{return IF;}
 do	{return DO;}
