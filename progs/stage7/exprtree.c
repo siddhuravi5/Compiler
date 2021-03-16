@@ -1137,7 +1137,7 @@ int codeGen(FILE* fp, struct tnode* root){
 					fprintf(fp,"POP R%d\n",j);
 				}
 				regptr--;
-				printf("-->%d<--\n",sourceReg);
+				//printf("-->%d<--\n",sourceReg);
 				return sourceReg;
 
 		case tSELFMETHOD:
@@ -1153,7 +1153,7 @@ int codeGen(FILE* fp, struct tnode* root){
 				
 				while(node!=NULL){
 					sourceReg=codeGen(fp,node);
-					printf("<--%d\n",sourceReg);
+					//printf("<--%d\n",sourceReg);
 					argArray[(++argArrayInd)]=sourceReg;
 					node=node->third;	//arg list
 				}
@@ -1204,7 +1204,7 @@ int codeGen(FILE* fp, struct tnode* root){
 					fprintf(fp,"POP R%d\n",j);
 				}
 				regptr--;
-				printf("-->%d\n",sourceReg);
+				//printf("-->%d\n",sourceReg);
 				return sourceReg;
 
 		case tSELFMETHOD2:
