@@ -12,6 +12,200 @@ int SPTOP=4096;
 
 struct Typetable* typeroot=NULL;
 
+struct Typetable* findType(char* name){
+	struct Lsymbol* lptr=Llookup(name);
+	if(lptr!=NULL){
+		return lptr->type;
+	}
+	struct Gsymbol* gptr=Glookup(name);
+	if(gptr==NULL){
+		printf("Variable not declared error\n");
+		exit(0);
+	}
+	if(gptr->Ctype!=NULL){
+		return typelookuponly("obj");
+	}
+	else{
+		return gptr->type;
+	}
+}
+
+void structOrObjTest(char* name){
+	struct Gsymbol* gptr=Glookup(name);
+	if(gptr->Ctype!=NULL) return;
+	struct Typetable* ptr=gptr->type;
+	if(ptr!=NULL && ptr->fields!=NULL) return;
+
+	printf("'.' is not a valid operator for non struct or non object type\n");
+	exit(0);
+}
+
+void objectTest(char* name){
+	struct Gsymbol* gptr=Glookup(name);
+	if(gptr->Ctype!=NULL) return;
+
+	printf("'.' func() is not valid for non object type\n");
+	exit(0);
+}
+
+struct Typetable* findclassfunctype(char* name1,char* name2){
+	struct Gsymbol* gptr=Glookup(name1);
+	if(gptr==NULL || gptr->Ctype==NULL){
+		printf("error 1\n");
+		exit(0);
+	}
+	struct Memberfunclist * fptr=gptr->Ctype->Vfuncptr;
+
+	while(fptr!=NULL){
+		if(strcmp(fptr->name,name2)==0){
+			return fptr->type;
+		}
+		fptr=fptr->next;
+	}
+	printf("error 2\n");
+		exit(0);
+}
+struct Typetable* findclassfuncNestedtype(char* name1,char* name2,char* name3){
+	struct Gsymbol* gptr=Glookup(name1);
+	if(gptr==NULL || gptr->Ctype==NULL){
+		printf("error 3\n");
+		exit(0);
+	}
+	struct Fieldlist *mptr=gptr->Ctype->memberfield;
+	while(mptr!=NULL){
+		if(strcmp(mptr->name,name2)==0){
+			break;
+		}
+		mptr=mptr->next;
+	}
+	if(mptr==NULL || mptr->Ctype==NULL){
+		printf("error 4\n");
+		exit(0);
+	}
+	struct Memberfunclist * fptr=mptr->Ctype->Vfuncptr;
+	while(fptr!=NULL){
+		if(strcmp(fptr->name,name3)==0){
+			return fptr->type;
+		}
+		fptr=fptr->next;
+	}
+	printf("error 5\n");
+		exit(0);
+}
+
+struct Typetable* findSelfMemType(char* classname,char* name){
+	struct Classtable* cptr=Clookup(classname);
+	struct Fieldlist *mptr=cptr->memberfield;
+	while(mptr!=NULL){
+		if(strcmp(mptr->name,name)==0){
+			if(mptr->type==NULL){
+				return typelookuponly("obj");
+			}
+			return mptr->type;
+		}
+		mptr=mptr->next;
+	}
+	printf("error 6\n");
+	exit(0);
+}
+
+struct Typetable* findSelfNestedMemType(char* classname,char* name1,char* name2){
+	struct Classtable* cptr=Clookup(classname);
+	struct Fieldlist *mptr=cptr->memberfield;
+	while(mptr!=NULL){
+		if(strcmp(mptr->name,name1)==0){
+			break;
+		}
+		mptr=mptr->next;
+	}
+	if(mptr->Ctype!=NULL){
+		return findSelfMemType(mptr->Ctype->name,name2); 
+	}
+	//or stuct type
+	if(mptr->type==NULL){
+		printf("error 7\n");
+		exit(0);
+	}
+	mptr=mptr->type->fields;
+	while(mptr!=NULL){
+		if(strcmp(mptr->name,name2)==0){
+			return mptr->type;
+		}
+		mptr=mptr->next;
+	}
+	printf("error 8\n");
+	exit(0);
+}
+struct Typetable* findSelfFuncType(char* classname,char* name1){
+	struct Classtable* cptr=Clookup(classname);
+	struct Memberfunclist *fptr=cptr->Vfuncptr;
+	while(fptr!=NULL){
+		if(strcmp(fptr->name,name1)==0){
+			return fptr->type;
+		}
+		fptr=fptr->next;
+	}
+	printf("error 9\n");
+	exit(0);
+}
+struct Typetable* findSelfNestedFuncType(char* classname,char* name1,char* name2){
+	struct Classtable* cptr=Clookup(classname);
+	struct Fieldlist *mptr=cptr->memberfield;
+	while(mptr!=NULL){
+		if(strcmp(mptr->name,name1)==0){
+			break;
+		}
+		mptr=mptr->next;
+	}
+	if(mptr->Ctype==NULL){
+		printf("error 10\n");
+		exit(0);
+	}
+	return findSelfFuncType(mptr->Ctype->name,name2);
+}
+void funcTest(char* name){
+	struct Gsymbol* gptr=Glookup(name);
+	if(gptr==NULL){
+		printf("error 11\n");
+		exit(0);
+	}
+	while(gptr!=NULL){
+		if(strcmp(gptr->name,name)==0){
+			return;
+		}
+		gptr=gptr->next;
+	}
+	printf("fn error 12\n");
+	exit(0);
+
+}
+void arrayTest(char *name){
+	struct Gsymbol* gptr=Glookup(name);
+	if(gptr==NULL){
+		printf("error 13\n");
+		exit(0);
+	}
+	while(gptr!=NULL){
+		if(strcmp(gptr->name,name)==0){
+			if(gptr->size>1)
+				return;
+		}
+		gptr=gptr->next;
+	}
+	printf("array error\n");
+	exit(0);
+}
+void classTest(char* name){
+	struct Classtable* ptr=classroot;
+	while(ptr!=NULL){
+		if(strcmp(ptr->name,name)==0){
+			return;
+		}
+		ptr=ptr->next;
+	}
+	printf("New is not called on a class\n");
+	exit(0);
+}
 void virtualFuncTableInit(FILE*fp,FILE* dp){
 	struct Classtable* ptr=classroot;
 	struct Memberfunclist* f1;
@@ -380,18 +574,50 @@ struct Typetable* typesearch(char *name){
 	}
 }
 
-void functypecheck(struct Paramstruct* params, struct Gsymbol* fn){
-	struct Paramstruct* args=fn->paramlist;
-	struct Paramstruct *ptr,*tmp;
-	ptr=params;
-	tmp=args;
-	while(ptr && tmp){
-		if(strcmp(ptr->name,tmp->name)!=0 || ptr->type!=tmp->type){
-			printf("\nglobal fn declaration and fn defn does not match\n");
+void functypecheck(struct Paramstruct* params, char* name,char* classname){
+	struct Gsymbol* fn=Glookup(name);
+	if(fn!=NULL){
+		struct Paramstruct* args=fn->paramlist;
+		struct Paramstruct *ptr,*tmp;
+		ptr=params;
+		tmp=args;
+		while(ptr && tmp){
+			if(strcmp(ptr->name,tmp->name)!=0 || ptr->type!=tmp->type){
+				printf("\nglobal fn declaration and fn defn does not match\n");
+				exit(0);
+			}
+			ptr=ptr->next;
+			tmp=tmp->next;
+		}
+	}else{
+		struct Classtable* cptr=Clookup(classname);
+		if(cptr==NULL){
+			printf("function not declared\n");
 			exit(0);
 		}
-		ptr=ptr->next;
-		tmp=tmp->next;
+		struct Memberfunclist * m1=cptr->Vfuncptr;
+		while(m1!=NULL){
+			if(strcmp(m1->name,name)==0){
+				break;
+			}
+			m1=m1->next;
+		}
+		if(m1==NULL){
+			printf("function not declared\n");
+			exit(0);
+		}
+		struct Paramstruct* args=m1->paramlist;
+		struct Paramstruct *ptr,*tmp;
+		ptr=params;
+		tmp=args;
+		while(ptr && tmp){
+			if(strcmp(ptr->name,tmp->name)!=0 || ptr->type!=tmp->type){
+				printf("\nglobal fn declaration and fn defn does not match\n");
+				exit(0);
+			}
+			ptr=ptr->next;
+			tmp=tmp->next;
+		}
 	}
 }
 
@@ -406,24 +632,24 @@ void reset_fnargumentsbinding(){
 	return;
 }
 struct tnode* createTree(int val, struct Typetable* type, char* c, int nodeType,struct Lsymbol* Lsym,struct Gsymbol* Gsym, struct tnode *l, struct tnode *r,struct tnode *third,struct Classtable* Centry){
+    if(nodeType==tASSIGN && r==NULL){
+    	printf("qwe\n");
+    }
     switch(nodeType){
-    	case tVAR:
-    		//printf("%s\n",Lsym->name);
-    		break;
     	case tADD:
     	case tSUB:
     	case tMUL:
     	case tDIV:
     	case tMOD:
     		type=typelookup("int");
-    		/*if(l->type!= r->type){
+    		if(l->type!= r->type){
     			//printf("type: %d %d %d\n",l->type,r->type,nodeType);
     			printf("\ntype mismatch error1\n");
     			exit(0);
     		}
     		else{
-    			type=typelookup("tINT");
-    		}*/
+    			type=typelookuponly("int");
+    		}
     		break;
     	case tLT:
     	case tGT:
@@ -432,27 +658,59 @@ struct tnode* createTree(int val, struct Typetable* type, char* c, int nodeType,
     	case tNE:
     	case tEQ:
     		//type=tBOOL;
-    		/*if(l->type!= r->type || l->type !=typelookup("int")){
+    		if(l->type!= r->type || l->type !=typelookup("int")){
     			//printf("type : %d %d\n",l->type,r->type);
     			printf("\ntype mismatch error2\n");
     			exit(0);
     		}
     		else{
-    			type=typelookup("bool");
+    			type=typelookuponly("bool");
     		
-    		}*/
+    		}
     		type=typelookup("bool");
     		break;
+    	
+    	case tREAD:
+    	case tWRITE:
+    		if(l->type!=typelookuponly("int") && l->type!=typelookuponly("str")){
+    			printf("\ntype mismatch error6\n");
+    			exit(0);
+    		}
+    		break;
     	case tASSIGN:
-    		/*if(l->nodetype!=tVAR && l->nodetype!=tARRAY){
+    		if(r==NULL){
+    			printf("error\n");
+    			exit(0);
+    		}
+    		else if(r->nodetype==tALLOC){
+    			if(l->type==NULL || l->type->fields==NULL){
+    				//not a struct type
     			printf("\ntype mismatch error3\n");
     			exit(0);
-    		}*/
+    			}
+    		}
+    		else if(r->nodetype==tFREE || r->nodetype==tINIT){
+    			if(l->type!=typelookuponly("int")){
+    				//printf("%s\n",l->type->name);
+    				printf("\ntype mismatch error7\n");
+    				exit(0);
+    			}
+    		}
+    		else if(r->nodetype==tNEW){
+    			if(l->type!=typelookuponly("obj")){
+    				printf("\ntype mismatch error8\n");
+    				exit(0);
+    			}
+    		}
+    		else if(l->type!=r->type){
+    			printf("\ntype mismatch error4\n");
+    			exit(0);
+    		}
     		break;
     	case tWHILE:
     	case tIF:
     		if(l->type!=typelookup("bool")){
-    			printf("\ntype mismatch error4\n");
+    			printf("\ntype mismatch error5\n");
     			exit(0);
     		}
     		break;

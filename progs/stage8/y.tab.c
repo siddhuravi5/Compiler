@@ -83,9 +83,8 @@
 	char* typename,*classname,*typename2;
 	struct Lsymbol* lptr;
 	struct Classtable* Cptr;
-	
 
-#line 89 "y.tab.c"
+#line 88 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -235,7 +234,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 20 "parser.y"
+#line 19 "parser.y"
 
 	struct tnode* p;
 	int n;
@@ -244,7 +243,7 @@ union YYSTYPE
 	struct Typetable* type;
 	struct Fieldlist* fieldlist;
 
-#line 248 "y.tab.c"
+#line 247 "y.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -624,18 +623,18 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    40,    40,    41,    42,    43,    44,    45,    46,    47,
-      52,    53,    55,    56,    58,    59,    60,    62,    63,    65,
-      66,    67,    69,    71,    72,    74,    76,    77,    85,    88,
-      89,    92,    95,    96,    99,   102,   103,   106,   107,   108,
-     111,   112,   114,   115,   116,   121,   122,   125,   139,   141,
-     142,   143,   146,   149,   156,   157,   158,   161,   162,   164,
-     167,   168,   173,   184,   188,   189,   193,   194,   195,   198,
-     199,   200,   201,   202,   203,   204,   207,   210,   212,   215,
-     218,   220,   221,   223,   225,   226,   227,   228,   229,   230,
-     231,   232,   233,   234,   235,   236,   237,   238,   239,   240,
-     241,   242,   244,   245,   246,   247,   248,   249,   250,   254,
-     257,   275,   277,   281,   283,   285,   290,   296,   297,   298
+       0,    39,    39,    40,    41,    42,    43,    44,    45,    46,
+      51,    52,    54,    55,    57,    58,    59,    61,    62,    64,
+      65,    66,    68,    70,    71,    73,    75,    76,    84,    87,
+      88,    91,    94,    95,    98,   101,   102,   105,   106,   107,
+     110,   111,   113,   114,   115,   120,   121,   124,   137,   139,
+     140,   141,   144,   147,   154,   155,   156,   159,   160,   162,
+     165,   166,   171,   182,   186,   187,   191,   192,   193,   196,
+     197,   198,   199,   200,   201,   202,   205,   208,   210,   213,
+     216,   218,   219,   221,   223,   224,   225,   226,   227,   228,
+     229,   230,   231,   232,   233,   234,   235,   236,   237,   238,
+     239,   240,   246,   248,   250,   251,   252,   253,   254,   258,
+     261,   280,   284,   290,   294,   298,   304,   312,   313,   314
 };
 #endif
 
@@ -1651,184 +1650,183 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 40 "parser.y"
+#line 39 "parser.y"
                                                                         {return 0;}
-#line 1657 "y.tab.c"
+#line 1656 "y.tab.c"
     break;
 
   case 3:
-#line 41 "parser.y"
+#line 40 "parser.y"
                                                                                 {return 0;}
-#line 1663 "y.tab.c"
+#line 1662 "y.tab.c"
     break;
 
   case 4:
-#line 42 "parser.y"
+#line 41 "parser.y"
                                                                               {return 0;}
-#line 1669 "y.tab.c"
+#line 1668 "y.tab.c"
     break;
 
   case 5:
-#line 43 "parser.y"
+#line 42 "parser.y"
                                                                         {return 0;}
-#line 1675 "y.tab.c"
+#line 1674 "y.tab.c"
     break;
 
   case 6:
-#line 44 "parser.y"
+#line 43 "parser.y"
                                                                                 {return 0;}
-#line 1681 "y.tab.c"
+#line 1680 "y.tab.c"
     break;
 
   case 7:
-#line 45 "parser.y"
+#line 44 "parser.y"
                                                                         {return 0;}
-#line 1687 "y.tab.c"
+#line 1686 "y.tab.c"
     break;
 
   case 8:
-#line 46 "parser.y"
+#line 45 "parser.y"
                                                                     {return 0;}
-#line 1693 "y.tab.c"
+#line 1692 "y.tab.c"
     break;
 
   case 9:
-#line 47 "parser.y"
+#line 46 "parser.y"
                                                                 {return 0;}
-#line 1699 "y.tab.c"
+#line 1698 "y.tab.c"
     break;
 
   case 10:
-#line 52 "parser.y"
+#line 51 "parser.y"
                                                 {virtualFuncTableInit(targetFile,dataFile);}
-#line 1705 "y.tab.c"
+#line 1704 "y.tab.c"
     break;
 
   case 17:
-#line 62 "parser.y"
+#line 61 "parser.y"
                 {Cinstall((yyvsp[0].c),NULL);classname=(yyvsp[0].c);}
-#line 1711 "y.tab.c"
+#line 1710 "y.tab.c"
     break;
 
   case 18:
-#line 63 "parser.y"
+#line 62 "parser.y"
                         {Cinstall((yyvsp[-2].c),(yyvsp[0].c));classname=(yyvsp[-2].c);}
-#line 1717 "y.tab.c"
+#line 1716 "y.tab.c"
     break;
 
   case 19:
-#line 65 "parser.y"
+#line 64 "parser.y"
                                 {}
-#line 1723 "y.tab.c"
+#line 1722 "y.tab.c"
     break;
 
   case 20:
-#line 66 "parser.y"
+#line 65 "parser.y"
                                 {}
-#line 1729 "y.tab.c"
+#line 1728 "y.tab.c"
     break;
 
   case 21:
-#line 67 "parser.y"
+#line 66 "parser.y"
                                 {}
-#line 1735 "y.tab.c"
+#line 1734 "y.tab.c"
     break;
 
   case 22:
-#line 69 "parser.y"
+#line 68 "parser.y"
                                 {ClassFinstall((yyvsp[-2].c),(yyvsp[-1].c));}
-#line 1741 "y.tab.c"
+#line 1740 "y.tab.c"
     break;
 
   case 23:
-#line 71 "parser.y"
+#line 70 "parser.y"
                                 {Lsymbolroot=NULL;reset_fnargumentsbinding();}
-#line 1747 "y.tab.c"
+#line 1746 "y.tab.c"
     break;
 
   case 24:
-#line 72 "parser.y"
+#line 71 "parser.y"
                                         {}
-#line 1753 "y.tab.c"
+#line 1752 "y.tab.c"
     break;
 
   case 25:
-#line 74 "parser.y"
+#line 73 "parser.y"
                                                 {ClassMinstall(typelookuponly((yyvsp[-5].c)),(yyvsp[-4].c),(yyvsp[-2].paramptr));}
-#line 1759 "y.tab.c"
+#line 1758 "y.tab.c"
     break;
 
   case 28:
-#line 85 "parser.y"
+#line 84 "parser.y"
                                                 {printTypeTable();}
-#line 1765 "y.tab.c"
+#line 1764 "y.tab.c"
     break;
 
   case 31:
-#line 92 "parser.y"
+#line 91 "parser.y"
                                         {typeinstallwithfields((yyvsp[-3].c),8,(yyvsp[-1].fieldlist));}
-#line 1771 "y.tab.c"
+#line 1770 "y.tab.c"
     break;
 
   case 32:
-#line 95 "parser.y"
+#line 94 "parser.y"
                                 {(yyval.fieldlist)=fieldappend((yyvsp[-1].fieldlist),(yyvsp[0].fieldlist));}
-#line 1777 "y.tab.c"
+#line 1776 "y.tab.c"
     break;
 
   case 33:
-#line 96 "parser.y"
+#line 95 "parser.y"
                 {(yyvsp[0].fieldlist)->fieldIndex=0; (yyval.fieldlist)=(yyvsp[0].fieldlist);}
-#line 1783 "y.tab.c"
+#line 1782 "y.tab.c"
     break;
 
   case 34:
-#line 99 "parser.y"
+#line 98 "parser.y"
                         {(yyval.fieldlist)=fieldinstall((yyvsp[-1].c),(yyvsp[-2].type));}
-#line 1789 "y.tab.c"
+#line 1788 "y.tab.c"
     break;
 
   case 35:
-#line 102 "parser.y"
+#line 101 "parser.y"
                                     {updateBinding();sptop=getSP();printGsymbolTable(); Lsymbolroot=NULL;reset_fnargumentsbinding();}
-#line 1795 "y.tab.c"
+#line 1794 "y.tab.c"
     break;
 
   case 36:
-#line 103 "parser.y"
+#line 102 "parser.y"
                                 {}
-#line 1801 "y.tab.c"
+#line 1800 "y.tab.c"
     break;
 
   case 39:
-#line 108 "parser.y"
+#line 107 "parser.y"
                         {updateTypeToGsymbol((yyvsp[-2].c));}
-#line 1807 "y.tab.c"
+#line 1806 "y.tab.c"
     break;
 
   case 42:
-#line 114 "parser.y"
+#line 113 "parser.y"
                                 {Ginstall((yyvsp[0].c),NULL,1,-1,NULL,-1);}
-#line 1813 "y.tab.c"
+#line 1812 "y.tab.c"
     break;
 
   case 43:
-#line 115 "parser.y"
+#line 114 "parser.y"
                                 {Ginstall((yyvsp[-3].c),NULL,(yyvsp[-1].n),-1,NULL,-1);}
-#line 1819 "y.tab.c"
+#line 1818 "y.tab.c"
     break;
 
   case 44:
-#line 116 "parser.y"
+#line 115 "parser.y"
                                 {Ginstall((yyvsp[-3].c),NULL,-1,-1,(yyvsp[-1].paramptr),-1);}
-#line 1825 "y.tab.c"
+#line 1824 "y.tab.c"
     break;
 
   case 47:
-#line 125 "parser.y"
-                                                                {//if($<type>1!=$<p>8->type){printf("invalid fn ret type");exit(0);}
-								 //if(Glookup($<c>2)==NULL){printf("fn not declared globally\n");exit(0);}
-								 //functypecheck($4,Glookup($<c>2));
+#line 124 "parser.y"
+                                                                {if((yyvsp[-1].p)==NULL || (yyvsp[-8].type)!=(yyvsp[-1].p)->type){printf("invalid fn ret type");exit(0);}
+								 functypecheck((yyvsp[-5].paramptr),(yyvsp[-7].c),classname);
 								 (yyval.p)=(yyvsp[-1].p);
 								 (yyval.p)->varname=(yyvsp[-7].c);
 								 Lprint();
@@ -1837,366 +1835,373 @@ yyreduce:
 								 printf("%s\n",(yyval.p)->varname);
 								 Lsymbolroot=NULL;reset_fnargumentsbinding();
 								 }
-#line 1841 "y.tab.c"
+#line 1839 "y.tab.c"
     break;
 
   case 48:
-#line 139 "parser.y"
+#line 137 "parser.y"
                                         {Linstall("self2",NULL);Linstall("self",NULL);}
-#line 1847 "y.tab.c"
+#line 1845 "y.tab.c"
     break;
 
   case 49:
-#line 141 "parser.y"
+#line 139 "parser.y"
                                         {(yyval.paramptr)=addParam((yyvsp[-2].paramptr),(yyvsp[0].paramptr));}
-#line 1853 "y.tab.c"
+#line 1851 "y.tab.c"
     break;
 
   case 50:
-#line 142 "parser.y"
+#line 140 "parser.y"
                                 {(yyval.paramptr)=(yyvsp[0].paramptr);}
-#line 1859 "y.tab.c"
+#line 1857 "y.tab.c"
     break;
 
   case 51:
-#line 143 "parser.y"
+#line 141 "parser.y"
                                         {(yyval.paramptr)=NULL;}
-#line 1865 "y.tab.c"
+#line 1863 "y.tab.c"
     break;
 
   case 52:
-#line 146 "parser.y"
+#line 144 "parser.y"
                 {(yyval.paramptr)=createParam((yyvsp[0].c),(yyvsp[-1].type));Linstall((yyvsp[0].c),(yyvsp[-1].type));}
-#line 1871 "y.tab.c"
+#line 1869 "y.tab.c"
     break;
 
   case 53:
-#line 149 "parser.y"
+#line 147 "parser.y"
                 {(yyval.type)= typelookup((yyvsp[0].c));}
-#line 1877 "y.tab.c"
+#line 1875 "y.tab.c"
     break;
 
   case 59:
-#line 164 "parser.y"
+#line 162 "parser.y"
                                 {Linstallbylistwithtype((yyvsp[-1].paramptr),(yyvsp[-2].type));}
-#line 1883 "y.tab.c"
+#line 1881 "y.tab.c"
     break;
 
   case 60:
-#line 167 "parser.y"
+#line 165 "parser.y"
                                 {(yyval.paramptr)=addParam((yyvsp[-2].paramptr),createParam((yyvsp[0].c),NULL));}
-#line 1889 "y.tab.c"
+#line 1887 "y.tab.c"
     break;
 
   case 61:
-#line 168 "parser.y"
+#line 166 "parser.y"
                                 {(yyval.paramptr)=createParam((yyvsp[0].c),NULL);}
-#line 1895 "y.tab.c"
+#line 1893 "y.tab.c"
     break;
 
   case 62:
-#line 174 "parser.y"
+#line 172 "parser.y"
                                 {(yyval.p)=(yyvsp[-1].p);
                                  (yyval.p)->right->val=tMAINLabel;
                                  Lprint();
                                  codeGen(targetFile,(yyval.p));
                                  Lsymbolroot=NULL;reset_fnargumentsbinding();
                                 }
-#line 1906 "y.tab.c"
+#line 1904 "y.tab.c"
     break;
 
   case 63:
-#line 184 "parser.y"
+#line 182 "parser.y"
                                         {(yyval.p) = createTree(-1,(yyvsp[-1].p)->type,NULL,tFBODY,NULL,NULL,(yyvsp[-2].p),(yyvsp[-1].p),NULL,Clookup(classname));}
-#line 1912 "y.tab.c"
+#line 1910 "y.tab.c"
     break;
 
   case 64:
-#line 188 "parser.y"
+#line 186 "parser.y"
                                 {(yyval.p) = createTree(-1,(yyvsp[-1].p)->type,NULL,tRET,NULL,NULL,(yyvsp[-1].p),NULL,NULL,NULL);}
-#line 1918 "y.tab.c"
+#line 1916 "y.tab.c"
     break;
 
   case 65:
-#line 189 "parser.y"
+#line 187 "parser.y"
                                 {(yyval.p) = createTree(-1,typelookup("void"),NULL,tRET,NULL,NULL,NULL,NULL,NULL,NULL);}
-#line 1924 "y.tab.c"
+#line 1922 "y.tab.c"
     break;
 
   case 66:
-#line 193 "parser.y"
+#line 191 "parser.y"
                                 {(yyval.p)=createTree(-1,NULL,NULL,tCONNECT,NULL,NULL,(yyvsp[-1].p),(yyvsp[0].p),NULL,NULL);}
-#line 1930 "y.tab.c"
+#line 1928 "y.tab.c"
     break;
 
   case 67:
-#line 194 "parser.y"
+#line 192 "parser.y"
                                 {(yyval.p)=(yyvsp[0].p);}
-#line 1936 "y.tab.c"
+#line 1934 "y.tab.c"
     break;
 
   case 68:
-#line 195 "parser.y"
+#line 193 "parser.y"
                                 {(yyval.p)=NULL;}
-#line 1942 "y.tab.c"
+#line 1940 "y.tab.c"
     break;
 
   case 69:
-#line 198 "parser.y"
+#line 196 "parser.y"
                                 {(yyval.p)=(yyvsp[0].p);}
-#line 1948 "y.tab.c"
+#line 1946 "y.tab.c"
     break;
 
   case 70:
-#line 199 "parser.y"
+#line 197 "parser.y"
                                 {(yyval.p)=(yyvsp[0].p);}
-#line 1954 "y.tab.c"
+#line 1952 "y.tab.c"
     break;
 
   case 71:
-#line 200 "parser.y"
+#line 198 "parser.y"
                                 {(yyval.p)=(yyvsp[0].p);}
-#line 1960 "y.tab.c"
+#line 1958 "y.tab.c"
     break;
 
   case 72:
-#line 201 "parser.y"
+#line 199 "parser.y"
                                 {(yyval.p)=(yyvsp[0].p);}
-#line 1966 "y.tab.c"
+#line 1964 "y.tab.c"
     break;
 
   case 73:
-#line 202 "parser.y"
+#line 200 "parser.y"
                                 {(yyval.p)=(yyvsp[0].p);}
-#line 1972 "y.tab.c"
+#line 1970 "y.tab.c"
     break;
 
   case 74:
-#line 203 "parser.y"
+#line 201 "parser.y"
                                 {(yyval.p)=(yyvsp[0].p);}
-#line 1978 "y.tab.c"
+#line 1976 "y.tab.c"
     break;
 
   case 75:
-#line 204 "parser.y"
+#line 202 "parser.y"
                                 {(yyval.p)=(yyvsp[0].p);}
-#line 1984 "y.tab.c"
+#line 1982 "y.tab.c"
     break;
 
   case 76:
-#line 207 "parser.y"
+#line 205 "parser.y"
                                         {(yyval.p)=createTree(-1,NULL,NULL,tBREAK,NULL,NULL,NULL,NULL,NULL,NULL);}
-#line 1990 "y.tab.c"
+#line 1988 "y.tab.c"
     break;
 
   case 77:
-#line 210 "parser.y"
+#line 208 "parser.y"
                                         {(yyval.p)=createTree(-1,NULL,NULL,tCONTINUE,NULL,NULL,NULL,NULL,NULL,NULL);}
-#line 1996 "y.tab.c"
+#line 1994 "y.tab.c"
     break;
 
   case 78:
-#line 212 "parser.y"
+#line 210 "parser.y"
                                         {(yyval.p)=createTree(-1,NULL,NULL,tREAD,NULL,NULL,(yyvsp[-2].p),NULL,NULL,NULL);}
-#line 2002 "y.tab.c"
+#line 2000 "y.tab.c"
     break;
 
   case 79:
-#line 215 "parser.y"
+#line 213 "parser.y"
                                         {(yyval.p)=createTree(-1,NULL,NULL,tWRITE,NULL,NULL,(yyvsp[-2].p),NULL,NULL,NULL);}
-#line 2008 "y.tab.c"
+#line 2006 "y.tab.c"
     break;
 
   case 80:
-#line 218 "parser.y"
-                                {(yyval.p) = createTree(-1,NULL,NULL,tASSIGN,NULL,NULL,(yyvsp[-3].p),(yyvsp[-1].p),NULL,NULL);}
-#line 2014 "y.tab.c"
+#line 216 "parser.y"
+                                {if((yyvsp[-1].p)==NULL){printf("why\n");}(yyval.p) = createTree(-1,NULL,NULL,tASSIGN,NULL,NULL,(yyvsp[-3].p),(yyvsp[-1].p),NULL,NULL);}
+#line 2012 "y.tab.c"
     break;
 
   case 81:
-#line 220 "parser.y"
+#line 218 "parser.y"
                                                                 {(yyval.p)=createTree(-1,NULL,NULL,tIF,NULL,NULL,(yyvsp[-7].p),(yyvsp[-4].p),(yyvsp[-2].p),NULL);}
-#line 2020 "y.tab.c"
+#line 2018 "y.tab.c"
     break;
 
   case 82:
-#line 221 "parser.y"
+#line 219 "parser.y"
                                                         {(yyval.p)=createTree(-1,NULL,NULL,tIF,NULL,NULL,(yyvsp[-5].p),(yyvsp[-2].p),NULL,NULL);}
-#line 2026 "y.tab.c"
+#line 2024 "y.tab.c"
     break;
 
   case 83:
-#line 223 "parser.y"
+#line 221 "parser.y"
                                                                 {(yyval.p)=createTree(-1,NULL,NULL,tWHILE,NULL,NULL,(yyvsp[-5].p),(yyvsp[-2].p),NULL,NULL);}
-#line 2032 "y.tab.c"
+#line 2030 "y.tab.c"
     break;
 
   case 84:
-#line 225 "parser.y"
-                                {(yyval.p) = createTree(-1,typelookup("int"),NULL,tADD,NULL,NULL,(yyvsp[-2].p),(yyvsp[0].p),NULL,NULL);}
-#line 2038 "y.tab.c"
+#line 223 "parser.y"
+                                {(yyval.p) = createTree(-1,NULL,NULL,tADD,NULL,NULL,(yyvsp[-2].p),(yyvsp[0].p),NULL,NULL);}
+#line 2036 "y.tab.c"
     break;
 
   case 85:
-#line 226 "parser.y"
-                                {(yyval.p) = createTree(-1,typelookup("int"),NULL,tSUB,NULL,NULL,(yyvsp[-2].p),(yyvsp[0].p),NULL,NULL);}
-#line 2044 "y.tab.c"
+#line 224 "parser.y"
+                                {(yyval.p) = createTree(-1,NULL,NULL,tSUB,NULL,NULL,(yyvsp[-2].p),(yyvsp[0].p),NULL,NULL);}
+#line 2042 "y.tab.c"
     break;
 
   case 86:
-#line 227 "parser.y"
-                                {(yyval.p) = createTree(-1,typelookup("int"),NULL,tMUL,NULL,NULL,(yyvsp[-2].p),(yyvsp[0].p),NULL,NULL);}
-#line 2050 "y.tab.c"
+#line 225 "parser.y"
+                                {(yyval.p) = createTree(-1,NULL,NULL,tMUL,NULL,NULL,(yyvsp[-2].p),(yyvsp[0].p),NULL,NULL);}
+#line 2048 "y.tab.c"
     break;
 
   case 87:
-#line 228 "parser.y"
-                                {(yyval.p) = createTree(-1,typelookup("int"),NULL,tMOD,NULL,NULL,(yyvsp[-2].p),(yyvsp[0].p),NULL,NULL);}
-#line 2056 "y.tab.c"
+#line 226 "parser.y"
+                                {(yyval.p) = createTree(-1,NULL,NULL,tMOD,NULL,NULL,(yyvsp[-2].p),(yyvsp[0].p),NULL,NULL);}
+#line 2054 "y.tab.c"
     break;
 
   case 88:
-#line 229 "parser.y"
-                                {(yyval.p) = createTree(-1,typelookup("int"),NULL,tDIV,NULL,NULL,(yyvsp[-2].p),(yyvsp[0].p),NULL,NULL);}
-#line 2062 "y.tab.c"
+#line 227 "parser.y"
+                                {(yyval.p) = createTree(-1,NULL,NULL,tDIV,NULL,NULL,(yyvsp[-2].p),(yyvsp[0].p),NULL,NULL);}
+#line 2060 "y.tab.c"
     break;
 
   case 89:
-#line 230 "parser.y"
+#line 228 "parser.y"
                         {(yyval.p) = (yyvsp[-1].p);}
-#line 2068 "y.tab.c"
+#line 2066 "y.tab.c"
     break;
 
   case 90:
-#line 231 "parser.y"
-                                        {(yyval.p) = createTree(-1,typelookup("bool"),NULL,tLT,NULL,NULL,(yyvsp[-2].p),(yyvsp[0].p),NULL,NULL);}
-#line 2074 "y.tab.c"
+#line 229 "parser.y"
+                                        {(yyval.p) = createTree(-1,NULL,NULL,tLT,NULL,NULL,(yyvsp[-2].p),(yyvsp[0].p),NULL,NULL);}
+#line 2072 "y.tab.c"
     break;
 
   case 91:
-#line 232 "parser.y"
-                                        {(yyval.p) = createTree(-1,typelookup("bool"),NULL,tGT,NULL,NULL,(yyvsp[-2].p),(yyvsp[0].p),NULL,NULL);}
-#line 2080 "y.tab.c"
+#line 230 "parser.y"
+                                        {(yyval.p) = createTree(-1,NULL,NULL,tGT,NULL,NULL,(yyvsp[-2].p),(yyvsp[0].p),NULL,NULL);}
+#line 2078 "y.tab.c"
     break;
 
   case 92:
-#line 233 "parser.y"
-                                        {(yyval.p) = createTree(-1,typelookup("bool"),NULL,tLE,NULL,NULL,(yyvsp[-2].p),(yyvsp[0].p),NULL,NULL);}
-#line 2086 "y.tab.c"
+#line 231 "parser.y"
+                                        {(yyval.p) = createTree(-1,NULL,NULL,tLE,NULL,NULL,(yyvsp[-2].p),(yyvsp[0].p),NULL,NULL);}
+#line 2084 "y.tab.c"
     break;
 
   case 93:
-#line 234 "parser.y"
-                                        {(yyval.p) = createTree(-1,typelookup("bool"),NULL,tGE,NULL,NULL,(yyvsp[-2].p),(yyvsp[0].p),NULL,NULL);}
-#line 2092 "y.tab.c"
+#line 232 "parser.y"
+                                        {(yyval.p) = createTree(-1,NULL,NULL,tGE,NULL,NULL,(yyvsp[-2].p),(yyvsp[0].p),NULL,NULL);}
+#line 2090 "y.tab.c"
     break;
 
   case 94:
-#line 235 "parser.y"
-                                        {(yyval.p) = createTree(-1,typelookup("bool"),NULL,tNE,NULL,NULL,(yyvsp[-2].p),(yyvsp[0].p),NULL,NULL);}
-#line 2098 "y.tab.c"
+#line 233 "parser.y"
+                                        {(yyval.p) = createTree(-1,NULL,NULL,tNE,NULL,NULL,(yyvsp[-2].p),(yyvsp[0].p),NULL,NULL);}
+#line 2096 "y.tab.c"
     break;
 
   case 95:
-#line 236 "parser.y"
-                                {(yyval.p) = createTree(-1,typelookup("bool"),NULL,tEQ,NULL,NULL,(yyvsp[-2].p),(yyvsp[0].p),NULL,NULL);}
-#line 2104 "y.tab.c"
+#line 234 "parser.y"
+                                {(yyval.p) = createTree(-1,NULL,NULL,tEQ,NULL,NULL,(yyvsp[-2].p),(yyvsp[0].p),NULL,NULL);}
+#line 2102 "y.tab.c"
     break;
 
   case 96:
-#line 237 "parser.y"
-                                        {(yyval.p) = createTree(-1,typelookup("bool"),NULL,tAND,NULL,NULL,(yyvsp[-2].p),(yyvsp[0].p),NULL,NULL);}
-#line 2110 "y.tab.c"
+#line 235 "parser.y"
+                                        {(yyval.p) = createTree(-1,NULL,NULL,tAND,NULL,NULL,(yyvsp[-2].p),(yyvsp[0].p),NULL,NULL);}
+#line 2108 "y.tab.c"
     break;
 
   case 97:
-#line 238 "parser.y"
-                                {(yyval.p) = createTree(-1,typelookup("bool"),NULL,tOR,NULL,NULL,(yyvsp[-2].p),(yyvsp[0].p),NULL,NULL);}
-#line 2116 "y.tab.c"
+#line 236 "parser.y"
+                                {(yyval.p) = createTree(-1,NULL,NULL,tOR,NULL,NULL,(yyvsp[-2].p),(yyvsp[0].p),NULL,NULL);}
+#line 2114 "y.tab.c"
     break;
 
   case 98:
-#line 239 "parser.y"
-                                {(yyval.p)=createTree((yyvsp[0].n),typelookup("int"),NULL,tNUM,NULL,NULL,NULL,NULL,NULL,NULL);}
-#line 2122 "y.tab.c"
+#line 237 "parser.y"
+                                {(yyval.p)=createTree((yyvsp[0].n),typelookuponly("int"),NULL,tNUM,NULL,NULL,NULL,NULL,NULL,NULL);}
+#line 2120 "y.tab.c"
     break;
 
   case 99:
-#line 240 "parser.y"
-                                {(yyval.p) = createTree(-1,typesearch((yyvsp[0].c)),(yyvsp[0].c),tVAR,Llookup((yyvsp[0].c)),Glookup((yyvsp[0].c)),NULL,NULL,NULL,Clookup((yyvsp[0].c)));}
-#line 2128 "y.tab.c"
+#line 238 "parser.y"
+                                {(yyval.p) = createTree(-1,findType((yyvsp[0].c)),(yyvsp[0].c),tVAR,Llookup((yyvsp[0].c)),Glookup((yyvsp[0].c)),NULL,NULL,NULL,Clookup((yyvsp[0].c)));}
+#line 2126 "y.tab.c"
     break;
 
   case 100:
-#line 241 "parser.y"
+#line 239 "parser.y"
                                 {(yyval.p) = (yyvsp[0].p);}
-#line 2134 "y.tab.c"
+#line 2132 "y.tab.c"
     break;
 
   case 101:
-#line 242 "parser.y"
-                                {(yyval.p)= createTree(-1,typesearch((yyvsp[-3].c)),(yyvsp[-3].c),tARRAY,NULL,Glookup((yyvsp[-3].c)),(yyvsp[-1].p),NULL,NULL,NULL);}
-#line 2140 "y.tab.c"
+#line 240 "parser.y"
+                                {if((yyvsp[-1].p)->type!=typelookuponly("int"))
+	 	{printf("type mismatch error1\n");exit(0);}
+	 	arrayTest((yyvsp[-3].c));
+	 	typeptr=findType((yyvsp[-3].c));
+	 	(yyval.p)= createTree(-1,typeptr,(yyvsp[-3].c),tARRAY,NULL,Glookup((yyvsp[-3].c)),(yyvsp[-1].p),NULL,NULL,NULL);}
+#line 2142 "y.tab.c"
     break;
 
   case 102:
-#line 244 "parser.y"
-                                {(yyval.p) = createTree(-1,typesearch((yyvsp[-2].c)),(yyvsp[-2].c),tFUNC,NULL,Glookup((yyvsp[-2].c)),NULL,NULL,NULL,NULL);}
-#line 2146 "y.tab.c"
+#line 246 "parser.y"
+                                {funcTest((yyvsp[-2].c));
+	 	(yyval.p) = createTree(-1,findType((yyvsp[-2].c)),(yyvsp[-2].c),tFUNC,NULL,Glookup((yyvsp[-2].c)),NULL,NULL,NULL,NULL);}
+#line 2149 "y.tab.c"
     break;
 
   case 103:
-#line 245 "parser.y"
-                                {(yyval.p) = createTree(-1,typesearch((yyvsp[-3].c)),(yyvsp[-3].c),tFUNC,NULL,Glookup((yyvsp[-3].c)),(yyvsp[-1].p),NULL,NULL,NULL);}
-#line 2152 "y.tab.c"
+#line 248 "parser.y"
+                                {funcTest((yyvsp[-3].c));
+	 	(yyval.p) = createTree(-1,findType((yyvsp[-3].c)),(yyvsp[-3].c),tFUNC,NULL,Glookup((yyvsp[-3].c)),(yyvsp[-1].p),NULL,NULL,NULL);}
+#line 2156 "y.tab.c"
     break;
 
   case 104:
-#line 246 "parser.y"
+#line 250 "parser.y"
                                 {(yyval.p)=(yyvsp[0].p);}
-#line 2158 "y.tab.c"
+#line 2162 "y.tab.c"
     break;
 
   case 105:
-#line 247 "parser.y"
+#line 251 "parser.y"
                                 {(yyval.p) = createTree(-1,NULL,NULL,tINIT,NULL,NULL,NULL,NULL,NULL,NULL);}
-#line 2164 "y.tab.c"
+#line 2168 "y.tab.c"
     break;
 
   case 106:
-#line 248 "parser.y"
+#line 252 "parser.y"
                         {(yyval.p) = createTree(-1,NULL,NULL,tALLOC,NULL,NULL,NULL,NULL,NULL,NULL);}
-#line 2170 "y.tab.c"
+#line 2174 "y.tab.c"
     break;
 
   case 107:
-#line 249 "parser.y"
-                                {(yyval.p) = createTree(-1,NULL,(yyvsp[-1].c),tNEW,NULL,NULL,NULL,NULL,NULL,NULL);}
-#line 2176 "y.tab.c"
+#line 253 "parser.y"
+                                {classTest((yyvsp[-1].c));(yyval.p) = createTree(-1,NULL,(yyvsp[-1].c),tNEW,NULL,NULL,NULL,NULL,NULL,NULL);}
+#line 2180 "y.tab.c"
     break;
 
   case 108:
-#line 250 "parser.y"
-                                {(yyvsp[-1].p) = createTree(-1,typesearch((yyvsp[-1].c)),(yyvsp[-1].c),tTYPEFIELD,Llookup((yyvsp[-1].c)),Glookup((yyvsp[-1].c)),NULL,NULL,NULL,NULL);
+#line 254 "parser.y"
+                                {objectTest((yyvsp[-1].c));(yyvsp[-1].p) = createTree(-1,typesearch((yyvsp[-1].c)),(yyvsp[-1].c),tTYPEFIELD,Llookup((yyvsp[-1].c)),Glookup((yyvsp[-1].c)),NULL,NULL,NULL,NULL);
 	 			(yyval.p)= createTree(-1,NULL,NULL,tFREE,NULL,NULL,(yyvsp[-1].p),NULL,NULL,NULL);}
-#line 2183 "y.tab.c"
+#line 2187 "y.tab.c"
     break;
 
   case 109:
-#line 254 "parser.y"
+#line 258 "parser.y"
                        {typename=(yyvsp[0].c);
 		(yyvsp[0].p) = createTree(-1,typelookup((yyvsp[-2].p)->varname),(yyvsp[0].c),tFIELD,Llookup((yyvsp[-2].c)),Glookup((yyvsp[-2].c)),NULL,NULL,NULL,NULL);
 		(yyval.p) = createTree(-1,fieldtypelookup((yyvsp[-2].p)->varname,typename),(yyvsp[-2].c),tDOT,Llookup((yyvsp[-2].c)),Glookup((yyvsp[-2].c)),(yyvsp[-2].p),(yyvsp[0].p),NULL,NULL);}
-#line 2191 "y.tab.c"
+#line 2195 "y.tab.c"
     break;
 
   case 110:
-#line 257 "parser.y"
-                    {if(Glookup((yyvsp[-2].c))!=NULL && Glookup((yyvsp[-2].c))->Ctype!=NULL){
+#line 261 "parser.y"
+                    {structOrObjTest((yyvsp[-2].c));
+		if(Glookup((yyvsp[-2].c))!=NULL && Glookup((yyvsp[-2].c))->Ctype!=NULL){
 			typename=(yyvsp[-2].c);
 			(yyvsp[-2].p) = createTree(-1,NULL,(yyvsp[-2].c),tCLASSOBJ,NULL,Glookup((yyvsp[-2].c)),NULL,NULL,NULL,NULL);
 			(yyvsp[0].p) = createTree(-1,NULL,(yyvsp[0].c),tCLASSFIELD,NULL,Glookup(typename),NULL,NULL,NULL,NULL);
-			(yyval.p) = createTree(-1,NULL,typename,tCLASSDOT,NULL,Glookup(typename),(yyvsp[-2].p),(yyvsp[0].p),NULL,NULL);
+			(yyval.p) = createTree(-1,typelookuponly("obj"),typename,tCLASSDOT,NULL,Glookup(typename),(yyvsp[-2].p),(yyvsp[0].p),NULL,NULL);
 		}else{
 			if(typesearch((yyvsp[-2].c))!=fieldtype((yyvsp[-2].c),(yyvsp[0].c))){
 				typename=fieldtype((yyvsp[-2].c),(yyvsp[0].c))->name;
@@ -2210,78 +2215,89 @@ yyreduce:
 			(yyvsp[0].p) = createTree(-1,typeptr,(yyvsp[0].c),tFIELD,Llookup(typename),Glookup(typename),NULL,NULL,NULL,NULL);
 			(yyval.p) = createTree(-1,typeptr2,typename,tDOT,Llookup(typename),Glookup(typename),(yyvsp[-2].p),(yyvsp[0].p),NULL,NULL);
 	}}
-#line 2214 "y.tab.c"
+#line 2219 "y.tab.c"
     break;
 
   case 111:
-#line 275 "parser.y"
-                                        {(yyval.p)=createTree(0,NULL,(yyvsp[-3].c),tMETHOD,NULL,Glookup((yyvsp[-5].c)),(yyvsp[-1].p),NULL,NULL,NULL);
+#line 280 "parser.y"
+                                        {objectTest((yyvsp[-5].c));
+		typeptr=findclassfunctype((yyvsp[-5].c),(yyvsp[-3].c));
+		(yyval.p)=createTree(0,typeptr,(yyvsp[-3].c),tMETHOD,NULL,Glookup((yyvsp[-5].c)),(yyvsp[-1].p),NULL,NULL,NULL);
 		}
-#line 2221 "y.tab.c"
+#line 2228 "y.tab.c"
     break;
 
   case 112:
-#line 277 "parser.y"
+#line 284 "parser.y"
                                                 {
+		objectTest((yyvsp[-7].c));
+		typeptr=findclassfuncNestedtype((yyvsp[-7].c),(yyvsp[-5].c),(yyvsp[-3].c));
 		bind=getBindingForMethod2((yyvsp[-7].c),(yyvsp[-5].c));
-		(yyval.p)=createTree(bind,NULL,(yyvsp[-5].c),tMETHOD,NULL,Glookup((yyvsp[-7].c)),(yyvsp[-1].p),NULL,NULL,Clookup(classname));
+		(yyval.p)=createTree(bind,typeptr,(yyvsp[-5].c),tMETHOD,NULL,Glookup((yyvsp[-7].c)),(yyvsp[-1].p),NULL,NULL,Clookup(classname));
 		}
-#line 2230 "y.tab.c"
+#line 2239 "y.tab.c"
     break;
 
   case 113:
-#line 281 "parser.y"
-                                        {(yyval.p)=createTree(0,NULL,(yyvsp[-3].c),tSELFMETHOD,NULL,NULL,(yyvsp[-1].p),NULL,NULL,Clookup(classname));
+#line 290 "parser.y"
+                                        {
+		typeptr=findSelfFuncType(classname,(yyvsp[-3].c));
+		(yyval.p)=createTree(0,typeptr,(yyvsp[-3].c),tSELFMETHOD,NULL,NULL,(yyvsp[-1].p),NULL,NULL,Clookup(classname));
 		}
-#line 2237 "y.tab.c"
+#line 2248 "y.tab.c"
     break;
 
   case 114:
-#line 283 "parser.y"
-                                                {(yyvsp[-5].p) = createTree(-1,NULL,(yyvsp[-5].c),tVAR,NULL,NULL,NULL,NULL,NULL,NULL);
-		(yyval.p)=createTree(-1,NULL,(yyvsp[-3].c),tSELFMETHOD2,NULL,NULL,(yyvsp[-1].p),(yyvsp[-5].p),NULL,Clookup(classname));}
-#line 2244 "y.tab.c"
+#line 294 "parser.y"
+                                                {
+		typeptr=findSelfNestedFuncType(classname,(yyvsp[-5].c),(yyvsp[-3].c));
+		(yyvsp[-5].p) = createTree(-1,NULL,(yyvsp[-5].c),tVAR,NULL,NULL,NULL,NULL,NULL,NULL);
+		(yyval.p)=createTree(-1,typeptr,(yyvsp[-3].c),tSELFMETHOD2,NULL,NULL,(yyvsp[-1].p),(yyvsp[-5].p),NULL,Clookup(classname));}
+#line 2257 "y.tab.c"
     break;
 
   case 115:
-#line 285 "parser.y"
+#line 298 "parser.y"
                                 {typename=(yyvsp[-2].c);typename2=(yyvsp[0].c);
+		typeptr=findSelfNestedMemType(classname,(yyvsp[-2].c),(yyvsp[0].c));
 		(yyvsp[-4].p) = createTree(-1,NULL,NULL,tSELF,NULL,NULL,NULL,NULL,NULL,Clookup(classname));
 		(yyvsp[-2].p) = createTree(-1,NULL,(yyvsp[-2].c),tCLASSFIELD2,NULL,NULL,NULL,NULL,NULL,Clookup(classname));
 		(yyvsp[0].p) = createTree(-1,findclassmemtype(classname,typename),typename2,tFIELD,Llookup((yyvsp[-4].c)),Glookup((yyvsp[-4].c)),NULL,NULL,NULL,NULL);
-		(yyval.p) = createTree(-1,NULL,NULL,tDOT,Llookup((yyvsp[-4].c)),Glookup((yyvsp[-4].c)),createTree(-1,NULL,classname,tCLASSDOT,NULL,NULL,(yyvsp[-4].p),(yyvsp[-2].p),NULL,Clookup(classname)),(yyvsp[0].p),NULL,NULL);}
-#line 2254 "y.tab.c"
+		(yyval.p) = createTree(-1,typeptr,NULL,tDOT,Llookup((yyvsp[-4].c)),Glookup((yyvsp[-4].c)),createTree(-1,NULL,classname,tCLASSDOT,NULL,NULL,(yyvsp[-4].p),(yyvsp[-2].p),NULL,Clookup(classname)),(yyvsp[0].p),NULL,NULL);}
+#line 2268 "y.tab.c"
     break;
 
   case 116:
-#line 290 "parser.y"
-                        {(yyvsp[-2].p) = createTree(-1,NULL,NULL,tSELF,NULL,NULL,NULL,NULL,NULL,Clookup(classname));
+#line 304 "parser.y"
+                        {
+			typeptr=findSelfMemType(classname,(yyvsp[0].c));
+			(yyvsp[-2].p) = createTree(-1,NULL,NULL,tSELF,NULL,NULL,NULL,NULL,NULL,Clookup(classname));
 			(yyvsp[0].p) = createTree(-1,NULL,(yyvsp[0].c),tCLASSFIELD2,NULL,NULL,NULL,NULL,NULL,Clookup(classname));
-			(yyval.p) = createTree(-1,NULL,classname,tCLASSDOT,NULL,NULL,(yyvsp[-2].p),(yyvsp[0].p),NULL,Clookup(classname));
+			(yyval.p) = createTree(-1,typeptr,classname,tCLASSDOT,NULL,NULL,(yyvsp[-2].p),(yyvsp[0].p),NULL,Clookup(classname));
 			}
-#line 2263 "y.tab.c"
+#line 2279 "y.tab.c"
     break;
 
   case 117:
-#line 296 "parser.y"
+#line 312 "parser.y"
                                 {(yyval.p)=appendArgList((yyvsp[-2].p),(yyvsp[0].p));}
-#line 2269 "y.tab.c"
+#line 2285 "y.tab.c"
     break;
 
   case 118:
-#line 297 "parser.y"
+#line 313 "parser.y"
                                 {(yyval.p)=(yyvsp[0].p);}
-#line 2275 "y.tab.c"
+#line 2291 "y.tab.c"
     break;
 
   case 119:
-#line 298 "parser.y"
+#line 314 "parser.y"
                                 {(yyval.p)=NULL;}
-#line 2281 "y.tab.c"
+#line 2297 "y.tab.c"
     break;
 
 
-#line 2285 "y.tab.c"
+#line 2301 "y.tab.c"
 
       default: break;
     }
@@ -2513,7 +2529,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 301 "parser.y"
+#line 317 "parser.y"
 
 
 int yyerror(char const *s)
@@ -2527,11 +2543,13 @@ int main(int argc, char*argv[]) {
 	typeinstall("bool");
 	typeinstall("void");
 	typeinstall("NULL");
+	typeinstall("obj");
 	typeinstallwithfields("int",1,NULL);
 	typeinstallwithfields("str",1,NULL);
 	typeinstallwithfields("bool",1,NULL);
 	typeinstallwithfields("void",1,NULL);
 	typeinstallwithfields("NULL",1,NULL);
+	typeinstallwithfields("obj",1,NULL);
 	targetFile=fopen("targetFile.xsm","w");
 	if(targetFile==NULL){
 		printf("file error\n");

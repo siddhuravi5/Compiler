@@ -15,7 +15,6 @@
 	char* typename,*classname,*typename2;
 	struct Lsymbol* lptr;
 	struct Classtable* Cptr;
-	
 %}
 %union{
 	struct tnode* p;
@@ -122,9 +121,8 @@ FdefBlock : FdefBlock Fdef
 	| Fdef
 	;
 
-Fdef : Type ID '(' ParamList2 ')' '{' LdeclBlock Body '}'	{//if($<type>1!=$<p>8->type){printf("invalid fn ret type");exit(0);}
-								 //if(Glookup($<c>2)==NULL){printf("fn not declared globally\n");exit(0);}
-								 //functypecheck($4,Glookup($<c>2));
+Fdef : Type ID '(' ParamList2 ')' '{' LdeclBlock Body '}'	{if($<p>8==NULL || $<type>1!=$<p>8->type){printf("invalid fn ret type");exit(0);}
+								 functypecheck($4,$<c>2,classname);
 								 $$=$8;
 								 $$->varname=$<c>2;
 								 Lprint();
@@ -215,50 +213,57 @@ InputStmt : READ '('expr ')' EOL	{$$=createTree(-1,NULL,NULL,tREAD,NULL,NULL,$3,
 OutputStmt : WRITE '(' expr ')' EOL	{$$=createTree(-1,NULL,NULL,tWRITE,NULL,NULL,$3,NULL,NULL,NULL);} 
 	;
 
-AsgStmt : expr ASSIGN expr EOL 	{$$ = createTree(-1,NULL,NULL,tASSIGN,NULL,NULL,$1,$3,NULL,NULL);} 
+AsgStmt : expr ASSIGN expr EOL 	{if($3==NULL){printf("why\n");}$$ = createTree(-1,NULL,NULL,tASSIGN,NULL,NULL,$1,$3,NULL,NULL);} 
 	;
 Ifstmt : IF '(' expr ')' then Slist ELSE Slist endif EOL	{$$=createTree(-1,NULL,NULL,tIF,NULL,NULL,$3,$6,$8,NULL);}
 	| IF '(' expr ')' then Slist endif EOL		{$$=createTree(-1,NULL,NULL,tIF,NULL,NULL,$3,$6,NULL,NULL);}
 	;
 Whilestmt : WHILE '(' expr ')' DO Slist endwhile EOL		{$$=createTree(-1,NULL,NULL,tWHILE,NULL,NULL,$3,$6,NULL,NULL);}
 	;
-expr : expr PLUS expr		{$$ = createTree(-1,typelookup("int"),NULL,tADD,NULL,NULL,$1,$3,NULL,NULL);}
-	 | expr MINUS expr  	{$$ = createTree(-1,typelookup("int"),NULL,tSUB,NULL,NULL,$1,$3,NULL,NULL);}
-	 | expr MUL expr	{$$ = createTree(-1,typelookup("int"),NULL,tMUL,NULL,NULL,$1,$3,NULL,NULL);}
-	 | expr MOD expr	{$$ = createTree(-1,typelookup("int"),NULL,tMOD,NULL,NULL,$1,$3,NULL,NULL);}
-	 | expr DIV expr	{$$ = createTree(-1,typelookup("int"),NULL,tDIV,NULL,NULL,$1,$3,NULL,NULL);}
+expr : expr PLUS expr		{$$ = createTree(-1,NULL,NULL,tADD,NULL,NULL,$1,$3,NULL,NULL);}
+	 | expr MINUS expr  	{$$ = createTree(-1,NULL,NULL,tSUB,NULL,NULL,$1,$3,NULL,NULL);}
+	 | expr MUL expr	{$$ = createTree(-1,NULL,NULL,tMUL,NULL,NULL,$1,$3,NULL,NULL);}
+	 | expr MOD expr	{$$ = createTree(-1,NULL,NULL,tMOD,NULL,NULL,$1,$3,NULL,NULL);}
+	 | expr DIV expr	{$$ = createTree(-1,NULL,NULL,tDIV,NULL,NULL,$1,$3,NULL,NULL);}
 	 | '(' expr ')'	{$$ = $2;}
-	 | expr LT expr 		{$$ = createTree(-1,typelookup("bool"),NULL,tLT,NULL,NULL,$1,$3,NULL,NULL);}
-	 | expr GT expr 		{$$ = createTree(-1,typelookup("bool"),NULL,tGT,NULL,NULL,$1,$3,NULL,NULL);}
-	 | expr LE expr 		{$$ = createTree(-1,typelookup("bool"),NULL,tLE,NULL,NULL,$1,$3,NULL,NULL);}
-	 | expr GE expr 		{$$ = createTree(-1,typelookup("bool"),NULL,tGE,NULL,NULL,$1,$3,NULL,NULL);}
-	 | expr NE expr 		{$$ = createTree(-1,typelookup("bool"),NULL,tNE,NULL,NULL,$1,$3,NULL,NULL);}
-	 | expr EQ expr		{$$ = createTree(-1,typelookup("bool"),NULL,tEQ,NULL,NULL,$1,$3,NULL,NULL);}
-	 | expr AND expr		{$$ = createTree(-1,typelookup("bool"),NULL,tAND,NULL,NULL,$1,$3,NULL,NULL);}
-	 | expr OR expr		{$$ = createTree(-1,typelookup("bool"),NULL,tOR,NULL,NULL,$1,$3,NULL,NULL);}
-	 | NUM			{$$=createTree($<n>1,typelookup("int"),NULL,tNUM,NULL,NULL,NULL,NULL,NULL,NULL);}
-	 | ID			{$$ = createTree(-1,typesearch($<c>1),$<c>1,tVAR,Llookup($<c>1),Glookup($<c>1),NULL,NULL,NULL,Clookup($<c>1));}
+	 | expr LT expr 		{$$ = createTree(-1,NULL,NULL,tLT,NULL,NULL,$1,$3,NULL,NULL);}
+	 | expr GT expr 		{$$ = createTree(-1,NULL,NULL,tGT,NULL,NULL,$1,$3,NULL,NULL);}
+	 | expr LE expr 		{$$ = createTree(-1,NULL,NULL,tLE,NULL,NULL,$1,$3,NULL,NULL);}
+	 | expr GE expr 		{$$ = createTree(-1,NULL,NULL,tGE,NULL,NULL,$1,$3,NULL,NULL);}
+	 | expr NE expr 		{$$ = createTree(-1,NULL,NULL,tNE,NULL,NULL,$1,$3,NULL,NULL);}
+	 | expr EQ expr		{$$ = createTree(-1,NULL,NULL,tEQ,NULL,NULL,$1,$3,NULL,NULL);}
+	 | expr AND expr		{$$ = createTree(-1,NULL,NULL,tAND,NULL,NULL,$1,$3,NULL,NULL);}
+	 | expr OR expr		{$$ = createTree(-1,NULL,NULL,tOR,NULL,NULL,$1,$3,NULL,NULL);}
+	 | NUM			{$$=createTree($<n>1,typelookuponly("int"),NULL,tNUM,NULL,NULL,NULL,NULL,NULL,NULL);}
+	 | ID			{$$ = createTree(-1,findType($<c>1),$<c>1,tVAR,Llookup($<c>1),Glookup($<c>1),NULL,NULL,NULL,Clookup($<c>1));}
 	 | STRING		{$$ = $<p>1;}	
-	 | ID '[' expr ']'	{$$= createTree(-1,typesearch($<c>1),$<c>1,tARRAY,NULL,Glookup($<c>1),$3,NULL,NULL,NULL);}
+	 | ID '[' expr ']'	{if($<p>3->type!=typelookuponly("int"))
+	 	{printf("type mismatch error1\n");exit(0);}
+	 	arrayTest($<c>1);
+	 	typeptr=findType($<c>1);
+	 	$$= createTree(-1,typeptr,$<c>1,tARRAY,NULL,Glookup($<c>1),$3,NULL,NULL,NULL);}
 	
-	 | ID '('')' 		{$$ = createTree(-1,typesearch($<c>1),$<c>1,tFUNC,NULL,Glookup($<c>1),NULL,NULL,NULL,NULL);}
-	 | ID '(' ArgList ')'	{$$ = createTree(-1,typesearch($<c>1),$<c>1,tFUNC,NULL,Glookup($<c>1),$3,NULL,NULL,NULL);}
+	 | ID '('')' 		{funcTest($<c>1);
+	 	$$ = createTree(-1,findType($<c>1),$<c>1,tFUNC,NULL,Glookup($<c>1),NULL,NULL,NULL,NULL);}
+	 | ID '(' ArgList ')'	{funcTest($<c>1);
+	 	$$ = createTree(-1,findType($<c>1),$<c>1,tFUNC,NULL,Glookup($<c>1),$3,NULL,NULL,NULL);}
 	 | Fieldd		{$$=$1;}
 	 | INIT'('')'		{$$ = createTree(-1,NULL,NULL,tINIT,NULL,NULL,NULL,NULL,NULL,NULL);}
 	 | ALLOC '('')'	{$$ = createTree(-1,NULL,NULL,tALLOC,NULL,NULL,NULL,NULL,NULL,NULL);}
-	 | NEW '(' ID ')'	{$$ = createTree(-1,NULL,$<c>3,tNEW,NULL,NULL,NULL,NULL,NULL,NULL);}
-	 | FREE '(' ID ')'	{$<p>3 = createTree(-1,typesearch($<c>3),$<c>3,tTYPEFIELD,Llookup($<c>3),Glookup($<c>3),NULL,NULL,NULL,NULL);
+	 | NEW '(' ID ')'	{classTest($<c>3);$$ = createTree(-1,NULL,$<c>3,tNEW,NULL,NULL,NULL,NULL,NULL,NULL);}
+	 | FREE '(' ID ')'	{objectTest($<c>3);$<p>3 = createTree(-1,typesearch($<c>3),$<c>3,tTYPEFIELD,Llookup($<c>3),Glookup($<c>3),NULL,NULL,NULL,NULL);
 	 			$<p>$= createTree(-1,NULL,NULL,tFREE,NULL,NULL,$<p>3,NULL,NULL,NULL);}		
 	 ;
 
 Fieldd : Fieldd '.' ID {typename=$<c>3;
 		$<p>3 = createTree(-1,typelookup($<p>1->varname),$<c>3,tFIELD,Llookup($<c>1),Glookup($<c>1),NULL,NULL,NULL,NULL);
 		$<p>$ = createTree(-1,fieldtypelookup($<p>1->varname,typename),$<c>1,tDOT,Llookup($<c>1),Glookup($<c>1),$<p>1,$<p>3,NULL,NULL);}
-	| ID '.' ID {if(Glookup($<c>1)!=NULL && Glookup($<c>1)->Ctype!=NULL){
+	| ID '.' ID {structOrObjTest($<c>1);
+		if(Glookup($<c>1)!=NULL && Glookup($<c>1)->Ctype!=NULL){
 			typename=$<c>1;
 			$<p>1 = createTree(-1,NULL,$<c>1,tCLASSOBJ,NULL,Glookup($<c>1),NULL,NULL,NULL,NULL);
 			$<p>3 = createTree(-1,NULL,$<c>3,tCLASSFIELD,NULL,Glookup(typename),NULL,NULL,NULL,NULL);
-			$<p>$ = createTree(-1,NULL,typename,tCLASSDOT,NULL,Glookup(typename),$<p>1,$<p>3,NULL,NULL);
+			$<p>$ = createTree(-1,typelookuponly("obj"),typename,tCLASSDOT,NULL,Glookup(typename),$<p>1,$<p>3,NULL,NULL);
 		}else{
 			if(typesearch($<c>1)!=fieldtype($<c>1,$<c>3)){
 				typename=fieldtype($<c>1,$<c>3)->name;
@@ -272,24 +277,35 @@ Fieldd : Fieldd '.' ID {typename=$<c>3;
 			$<p>3 = createTree(-1,typeptr,$<c>3,tFIELD,Llookup(typename),Glookup(typename),NULL,NULL,NULL,NULL);
 			$<p>$ = createTree(-1,typeptr2,typename,tDOT,Llookup(typename),Glookup(typename),$<p>1,$<p>3,NULL,NULL);
 	}}
-	|ID '.' ID '(' ArgList ')'	{$<p>$=createTree(0,NULL,$<c>3,tMETHOD,NULL,Glookup($<c>1),$5,NULL,NULL,NULL);
+	|ID '.' ID '(' ArgList ')'	{objectTest($<c>1);
+		typeptr=findclassfunctype($<c>1,$<c>3);
+		$<p>$=createTree(0,typeptr,$<c>3,tMETHOD,NULL,Glookup($<c>1),$5,NULL,NULL,NULL);
 		}
 	| ID '.' ID '.' ID '(' ArgList ')'	{
+		objectTest($<c>1);
+		typeptr=findclassfuncNestedtype($<c>1,$<c>3,$<c>5);
 		bind=getBindingForMethod2($<c>1,$<c>3);
-		$<p>$=createTree(bind,NULL,$<c>3,tMETHOD,NULL,Glookup($<c>1),$7,NULL,NULL,Clookup(classname));
+		$<p>$=createTree(bind,typeptr,$<c>3,tMETHOD,NULL,Glookup($<c>1),$7,NULL,NULL,Clookup(classname));
 		}
-	| SELF '.' ID '(' ArgList ')'	{$<p>$=createTree(0,NULL,$<c>3,tSELFMETHOD,NULL,NULL,$5,NULL,NULL,Clookup(classname));
+	| SELF '.' ID '(' ArgList ')'	{
+		typeptr=findSelfFuncType(classname,$<c>3);
+		$<p>$=createTree(0,typeptr,$<c>3,tSELFMETHOD,NULL,NULL,$5,NULL,NULL,Clookup(classname));
 		}
-	| SELF '.' ID '.' ID '(' ArgList ')'	{$<p>3 = createTree(-1,NULL,$<c>3,tVAR,NULL,NULL,NULL,NULL,NULL,NULL);
-		$<p>$=createTree(-1,NULL,$<c>5,tSELFMETHOD2,NULL,NULL,$7,$<p>3,NULL,Clookup(classname));}
+	| SELF '.' ID '.' ID '(' ArgList ')'	{
+		typeptr=findSelfNestedFuncType(classname,$<c>3,$<c>5);
+		$<p>3 = createTree(-1,NULL,$<c>3,tVAR,NULL,NULL,NULL,NULL,NULL,NULL);
+		$<p>$=createTree(-1,typeptr,$<c>5,tSELFMETHOD2,NULL,NULL,$7,$<p>3,NULL,Clookup(classname));}
 	| SELF '.' ID '.' ID	{typename=$<c>3;typename2=$<c>5;
+		typeptr=findSelfNestedMemType(classname,$<c>3,$<c>5);
 		$<p>1 = createTree(-1,NULL,NULL,tSELF,NULL,NULL,NULL,NULL,NULL,Clookup(classname));
 		$<p>3 = createTree(-1,NULL,$<c>3,tCLASSFIELD2,NULL,NULL,NULL,NULL,NULL,Clookup(classname));
 		$<p>5 = createTree(-1,findclassmemtype(classname,typename),typename2,tFIELD,Llookup($<c>1),Glookup($<c>1),NULL,NULL,NULL,NULL);
-		$<p>$ = createTree(-1,NULL,NULL,tDOT,Llookup($<c>1),Glookup($<c>1),createTree(-1,NULL,classname,tCLASSDOT,NULL,NULL,$<p>1,$<p>3,NULL,Clookup(classname)),$<p>5,NULL,NULL);}
-	| SELF '.' ID	{$<p>1 = createTree(-1,NULL,NULL,tSELF,NULL,NULL,NULL,NULL,NULL,Clookup(classname));
+		$<p>$ = createTree(-1,typeptr,NULL,tDOT,Llookup($<c>1),Glookup($<c>1),createTree(-1,NULL,classname,tCLASSDOT,NULL,NULL,$<p>1,$<p>3,NULL,Clookup(classname)),$<p>5,NULL,NULL);}
+	| SELF '.' ID	{
+			typeptr=findSelfMemType(classname,$<c>3);
+			$<p>1 = createTree(-1,NULL,NULL,tSELF,NULL,NULL,NULL,NULL,NULL,Clookup(classname));
 			$<p>3 = createTree(-1,NULL,$<c>3,tCLASSFIELD2,NULL,NULL,NULL,NULL,NULL,Clookup(classname));
-			$<p>$ = createTree(-1,NULL,classname,tCLASSDOT,NULL,NULL,$<p>1,$<p>3,NULL,Clookup(classname));
+			$<p>$ = createTree(-1,typeptr,classname,tCLASSDOT,NULL,NULL,$<p>1,$<p>3,NULL,Clookup(classname));
 			}
 	;
 
@@ -311,11 +327,13 @@ int main(int argc, char*argv[]) {
 	typeinstall("bool");
 	typeinstall("void");
 	typeinstall("NULL");
+	typeinstall("obj");
 	typeinstallwithfields("int",1,NULL);
 	typeinstallwithfields("str",1,NULL);
 	typeinstallwithfields("bool",1,NULL);
 	typeinstallwithfields("void",1,NULL);
 	typeinstallwithfields("NULL",1,NULL);
+	typeinstallwithfields("obj",1,NULL);
 	targetFile=fopen("targetFile.xsm","w");
 	if(targetFile==NULL){
 		printf("file error\n");

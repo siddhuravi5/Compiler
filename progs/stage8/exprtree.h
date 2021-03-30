@@ -163,10 +163,15 @@ int getBindingForMethod2(char* name1,char* name2);
 struct Typetable* findclassmemtype(char* cname,char* type);
 void Cinstall(char*name,char* parent);
 void virtualFuncTableInit();
+struct Typetable* findType(char* name);
+void structOrObjTest(char* name);
+void objectTest(char* name);
+struct Typetable* findclassfuncNestedtype(char* name1,char* name2,char* name3);
+struct Typetable* findclassfunctype(char* name1,char* name2);
 
 /*Create a node tnode*/
 struct tnode* createTree(int val, struct Typetable* type, char* c, int nodeType,struct Lsymbol* Lsym,struct Gsymbol* Gsym, struct tnode *l, struct tnode *r,struct tnode *third,struct Classtable* Centry);
-void functypecheck(struct Paramstruct* params, struct Gsymbol* fn);
+void functypecheck(struct Paramstruct* params, char* name, char* classname);
 struct Typetable* fieldtype(char* name1,char* name2);
 struct Typetable* fieldtypelookup(char* name1,char* name2);
 struct Gsymbol* Gsymbolroot;
